@@ -15,6 +15,8 @@ namespace gk2 {
 
         public Form1() {
             InitializeComponent();
+            MinimumSize = new Size(MinimumSize.Width, 
+                groupBox1.Height + groupBox2.Height);
             Db = new DirectBitmap(pictureBox1.Width, pictureBox1.Height);
             pictureBox1.Image = Db.Bitmap;
             SetTimer();
@@ -32,8 +34,9 @@ namespace gk2 {
         private void Form1_Paint(object sender, PaintEventArgs e) {
             for (int i = 0; i < Db.Width; ++i)
                 for (int j = 0; j < Db.Height; ++j)
-                    Db.SetPixel(i, j, 
-                        Color.FromArgb((i | j) % 256, (i & j) % 256, (i ^ j) % 256));
+                    Db.SetPixel(i, j,
+                        Color.FromArgb((i | j) % 256, 
+                        (i & j) % 256, (i ^ j) % 256));
         }
 
         private void Form1_FormClosing(object sender, FormClosingEventArgs e) {
@@ -42,6 +45,10 @@ namespace gk2 {
 
         private void Form1_ResizeBegin(object sender, EventArgs e) {
             Invalidate(false);
+        }
+
+        private void CheckBox1_Click(object sender, EventArgs e) {
+            KtrackBar1.Enabled = mtrackBar1.Enabled = !checkBox1.Checked;
         }
     }
 }
