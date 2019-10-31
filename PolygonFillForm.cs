@@ -1,4 +1,5 @@
-﻿using System;
+﻿using gk2.Algorithm;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
@@ -10,15 +11,25 @@ using System.Windows.Forms;
 
 namespace gk2 {
     public partial class PolygonFillForm : Form {
-        private DirectBitmap Db;
-        private Timer timer = new Timer();
+        public DirectBitmap directBitmap { get; private set; }
+        public Timer timer { get; private set; }
+        public int nSquaresHorizontal { get; private set; }
+        public int nSquaresVertical { get; private set; }
+        public MainController mainController { get; private set; }
 
         public PolygonFillForm() {
             InitializeComponent();
-            MinimumSize = new Size(MinimumSize.Width, 
+            timer = new Timer();
+
+            MinimumSize = new Size(MinimumSize.Width,
                 groupBox1.Height + groupBox2.Height);
-            Db = new DirectBitmap(pictureBox1.Width, pictureBox1.Height);
-            pictureBox1.Image = Db.Bitmap;
+            directBitmap =
+                new DirectBitmap(pictureBox1.Width, pictureBox1.Height);
+            pictureBox1.Image = directBitmap.Bitmap;
+            (nSquaresHorizontal, nSquaresVertical) = (10, 10);
+            mainController =
+                new MainController(
+                    nSquaresHorizontal, nSquaresVertical, directBitmap);
             SetTimer();
         }
 
@@ -32,15 +43,16 @@ namespace gk2 {
         }
 
         private void Form1_Paint(object sender, PaintEventArgs e) {
-            for (int i = 0; i < Db.Width; ++i)
-                for (int j = 0; j < Db.Height; ++j)
-                    Db.SetPixel(i, j,
-                        Color.FromArgb((i | j) % 256, 
-                        (i & j) % 256, (i ^ j) % 256));
+            // for (int i = 0; i < directBitmap.Width; ++i)
+            //     for (int j = 0; j < directBitmap.Height; ++j)
+            //         directBitmap.SetPixel(i, j,
+            //             Color.FromArgb((i | j) % 256,
+            //             (i & j) % 256, (i ^ j) % 256));
+            mainController.OnPaint(directBitmap);
         }
 
         private void Form1_FormClosing(object sender, FormClosingEventArgs e) {
-            Db.Dispose();
+            directBitmap.Dispose();
         }
 
         private void Form1_ResizeBegin(object sender, EventArgs e) {

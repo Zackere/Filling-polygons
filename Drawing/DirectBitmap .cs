@@ -1,4 +1,5 @@
-﻿using System;
+﻿using gk2.Utils;
+using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Drawing.Imaging;
@@ -31,6 +32,14 @@ namespace gk2 {
             int col = colour.ToArgb();
 
             Bits[index] = col;
+        }
+        public void DrawLine(Vector2 from, Vector2 to) {
+            Pen blackPen = new Pen(Color.Black, 1);
+            using (var graphics = Graphics.FromImage(Bitmap)) {
+                graphics.SmoothingMode = 
+                    System.Drawing.Drawing2D.SmoothingMode.HighSpeed;
+                graphics.DrawLine(blackPen, from.X, from.Y, to.X, to.Y);
+            }
         }
 
         public Color GetPixel(int x, int y) {
