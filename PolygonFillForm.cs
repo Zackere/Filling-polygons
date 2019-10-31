@@ -9,11 +9,11 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace gk2 {
-    public partial class Form1 : Form {
+    public partial class PolygonFillForm : Form {
         private DirectBitmap Db;
         private Timer timer = new Timer();
 
-        public Form1() {
+        public PolygonFillForm() {
             InitializeComponent();
             MinimumSize = new Size(MinimumSize.Width, 
                 groupBox1.Height + groupBox2.Height);
