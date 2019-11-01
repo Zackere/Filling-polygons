@@ -66,7 +66,7 @@
             this.tableLayoutPanel1.Controls.Add(this.pictureBox1, 1, 0);
             this.tableLayoutPanel1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tableLayoutPanel1.Location = new System.Drawing.Point(0, 0);
-            this.tableLayoutPanel1.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.tableLayoutPanel1.Margin = new System.Windows.Forms.Padding(4);
             this.tableLayoutPanel1.Name = "tableLayoutPanel1";
             this.tableLayoutPanel1.RowCount = 1;
             this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
@@ -81,7 +81,7 @@
             this.tableLayoutPanel2.Controls.Add(this.groupBox2, 0, 1);
             this.tableLayoutPanel2.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tableLayoutPanel2.Location = new System.Drawing.Point(4, 4);
-            this.tableLayoutPanel2.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.tableLayoutPanel2.Margin = new System.Windows.Forms.Padding(4);
             this.tableLayoutPanel2.Name = "tableLayoutPanel2";
             this.tableLayoutPanel2.RowCount = 3;
             this.tableLayoutPanel2.RowStyles.Add(new System.Windows.Forms.RowStyle());
@@ -95,9 +95,9 @@
             this.groupBox1.Controls.Add(this.tableLayoutPanel3);
             this.groupBox1.Dock = System.Windows.Forms.DockStyle.Top;
             this.groupBox1.Location = new System.Drawing.Point(4, 4);
-            this.groupBox1.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.groupBox1.Margin = new System.Windows.Forms.Padding(4);
             this.groupBox1.Name = "groupBox1";
-            this.groupBox1.Padding = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.groupBox1.Padding = new System.Windows.Forms.Padding(4);
             this.groupBox1.Size = new System.Drawing.Size(304, 158);
             this.groupBox1.TabIndex = 0;
             this.groupBox1.TabStop = false;
@@ -112,7 +112,7 @@
             this.tableLayoutPanel3.Controls.Add(this.Aproximate, 0, 1);
             this.tableLayoutPanel3.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tableLayoutPanel3.Location = new System.Drawing.Point(4, 28);
-            this.tableLayoutPanel3.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.tableLayoutPanel3.Margin = new System.Windows.Forms.Padding(4);
             this.tableLayoutPanel3.Name = "tableLayoutPanel3";
             this.tableLayoutPanel3.RowCount = 3;
             this.tableLayoutPanel3.RowStyles.Add(new System.Windows.Forms.RowStyle());
@@ -126,7 +126,7 @@
             this.Exact.AutoSize = true;
             this.Exact.Dock = System.Windows.Forms.DockStyle.Fill;
             this.Exact.Location = new System.Drawing.Point(4, 4);
-            this.Exact.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.Exact.Margin = new System.Windows.Forms.Padding(4);
             this.Exact.Name = "Exact";
             this.Exact.Size = new System.Drawing.Size(288, 29);
             this.Exact.TabIndex = 1;
@@ -139,7 +139,7 @@
             this.Combined.AutoSize = true;
             this.Combined.Dock = System.Windows.Forms.DockStyle.Fill;
             this.Combined.Location = new System.Drawing.Point(4, 78);
-            this.Combined.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.Combined.Margin = new System.Windows.Forms.Padding(4);
             this.Combined.Name = "Combined";
             this.Combined.Size = new System.Drawing.Size(288, 44);
             this.Combined.TabIndex = 3;
@@ -152,7 +152,7 @@
             this.Aproximate.AutoSize = true;
             this.Aproximate.Dock = System.Windows.Forms.DockStyle.Fill;
             this.Aproximate.Location = new System.Drawing.Point(4, 41);
-            this.Aproximate.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.Aproximate.Margin = new System.Windows.Forms.Padding(4);
             this.Aproximate.Name = "Aproximate";
             this.Aproximate.Size = new System.Drawing.Size(288, 29);
             this.Aproximate.TabIndex = 2;
@@ -165,9 +165,9 @@
             this.groupBox2.Controls.Add(this.tableLayoutPanel4);
             this.groupBox2.Dock = System.Windows.Forms.DockStyle.Fill;
             this.groupBox2.Location = new System.Drawing.Point(4, 170);
-            this.groupBox2.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.groupBox2.Margin = new System.Windows.Forms.Padding(4);
             this.groupBox2.Name = "groupBox2";
-            this.groupBox2.Padding = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.groupBox2.Padding = new System.Windows.Forms.Padding(4);
             this.groupBox2.Size = new System.Drawing.Size(304, 406);
             this.groupBox2.TabIndex = 1;
             this.groupBox2.TabStop = false;
@@ -186,7 +186,7 @@
             this.tableLayoutPanel4.Controls.Add(this.trackBar1, 0, 6);
             this.tableLayoutPanel4.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tableLayoutPanel4.Location = new System.Drawing.Point(4, 28);
-            this.tableLayoutPanel4.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.tableLayoutPanel4.Margin = new System.Windows.Forms.Padding(4);
             this.tableLayoutPanel4.Name = "tableLayoutPanel4";
             this.tableLayoutPanel4.RowCount = 9;
             this.tableLayoutPanel4.RowStyles.Add(new System.Windows.Forms.RowStyle());
@@ -218,7 +218,7 @@
             this.checkBox1.AutoSize = true;
             this.checkBox1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.checkBox1.Location = new System.Drawing.Point(4, 4);
-            this.checkBox1.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.checkBox1.Margin = new System.Windows.Forms.Padding(4);
             this.checkBox1.Name = "checkBox1";
             this.checkBox1.Size = new System.Drawing.Size(288, 29);
             this.checkBox1.TabIndex = 4;
@@ -231,7 +231,7 @@
             this.KtrackBar1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.KtrackBar1.LargeChange = 1;
             this.KtrackBar1.Location = new System.Drawing.Point(4, 66);
-            this.KtrackBar1.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.KtrackBar1.Margin = new System.Windows.Forms.Padding(4);
             this.KtrackBar1.Name = "KtrackBar1";
             this.KtrackBar1.Size = new System.Drawing.Size(288, 90);
             this.KtrackBar1.TabIndex = 5;
@@ -252,7 +252,7 @@
             this.mtrackBar1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.mtrackBar1.LargeChange = 1;
             this.mtrackBar1.Location = new System.Drawing.Point(4, 306);
-            this.mtrackBar1.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.mtrackBar1.Margin = new System.Windows.Forms.Padding(4);
             this.mtrackBar1.Name = "mtrackBar1";
             this.mtrackBar1.Size = new System.Drawing.Size(288, 64);
             this.mtrackBar1.TabIndex = 7;
@@ -272,7 +272,7 @@
             // 
             this.trackBar1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.trackBar1.Location = new System.Drawing.Point(4, 189);
-            this.trackBar1.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.trackBar1.Margin = new System.Windows.Forms.Padding(4);
             this.trackBar1.Name = "trackBar1";
             this.trackBar1.Size = new System.Drawing.Size(288, 90);
             this.trackBar1.TabIndex = 6;
@@ -281,13 +281,17 @@
             // 
             this.pictureBox1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.pictureBox1.Location = new System.Drawing.Point(324, 4);
-            this.pictureBox1.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.pictureBox1.Margin = new System.Windows.Forms.Padding(4);
             this.pictureBox1.Name = "pictureBox1";
-            this.pictureBox1.Padding = new System.Windows.Forms.Padding(100, 100, 100, 100);
+            this.pictureBox1.Padding = new System.Windows.Forms.Padding(100);
             this.pictureBox1.Size = new System.Drawing.Size(1576, 1054);
             this.pictureBox1.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
             this.pictureBox1.TabIndex = 2;
             this.pictureBox1.TabStop = false;
+            this.pictureBox1.Paint += new System.Windows.Forms.PaintEventHandler(this.pictureBox1_Paint);
+            this.pictureBox1.MouseDown += new System.Windows.Forms.MouseEventHandler(this.pictureBox1_MouseDown);
+            this.pictureBox1.MouseMove += new System.Windows.Forms.MouseEventHandler(this.pictureBox1_MouseMove);
+            this.pictureBox1.MouseUp += new System.Windows.Forms.MouseEventHandler(this.pictureBox1_MouseUp);
             // 
             // PolygonFillForm
             // 
@@ -295,12 +299,10 @@
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1896, 1062);
             this.Controls.Add(this.tableLayoutPanel1);
-            this.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.Margin = new System.Windows.Forms.Padding(4);
             this.Name = "PolygonFillForm";
             this.Text = "PolygonFill";
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.Form1_FormClosing);
-            this.ResizeBegin += new System.EventHandler(this.Form1_ResizeBegin);
-            this.Paint += new System.Windows.Forms.PaintEventHandler(this.Form1_Paint);
             this.tableLayoutPanel1.ResumeLayout(false);
             this.tableLayoutPanel2.ResumeLayout(false);
             this.groupBox1.ResumeLayout(false);

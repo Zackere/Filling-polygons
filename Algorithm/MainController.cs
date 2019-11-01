@@ -1,6 +1,7 @@
 ﻿using gk2.Utils;
 using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -17,12 +18,12 @@ namespace gk2.Algorithm {
             Vector3[,] points
                 = new Vector3[nSquaresHorizontal + 1, nSquareVertical + 1];
             for (int i = 0; i <= nSquaresHorizontal; ++i) {
-                cur.x = 0;
+                cur.y = 0;
                 for (int j = 0; j <= nSquareVertical; ++j) {
                     points[i, j] = new Vector3(cur.x, cur.y, 0);
-                    cur.x += x_step;
+                    cur.y += y_step;
                 }
-                cur.y += y_step;
+                cur.x += x_step;
             }
             for (int i = 0; i < nSquaresHorizontal; ++i)
                 for (int j = 0; j < nSquareVertical; ++j) {
@@ -37,8 +38,21 @@ namespace gk2.Algorithm {
                 }
         }
         public void OnPaint(DirectBitmap directBitmap) {
+            directBitmap.Clear(Color.White);
             foreach (var triangle in triangles)
                 triangle.OnPaint(directBitmap);
+        }
+        public void OnMouseDown(Vector2 mouse_pos) {
+            foreach (var triangle in triangles)
+                triangle.OnMouseDown(mouse_pos);
+        }
+        public void OnMouseUp(Vector2 mouse_pos) {
+            foreach (var triangle in triangles)
+                triangle.OnMouseUp(mouse_pos);
+        }
+        public void OnMouseMove(Vector2 mouse_pos) {
+            foreach (var triangle in triangles)
+                triangle.OnMouseMove(mouse_pos);
         }
     }
 }

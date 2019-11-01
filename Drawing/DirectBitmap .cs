@@ -41,6 +41,11 @@ namespace gk2 {
                 graphics.DrawLine(blackPen, from.X, from.Y, to.X, to.Y);
             }
         }
+        public void Clear(Color color) {
+            using (var graphics = Graphics.FromImage(Bitmap)) {
+                graphics.Clear(color);
+            }
+        }
 
         public Color GetPixel(int x, int y) {
             int index = x + (y * Width);
