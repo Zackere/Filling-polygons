@@ -7,18 +7,34 @@ using System.Threading.Tasks;
 
 namespace gk2.Algorithm {
     public class MainController {
-        public HashSet<Triangle> triangles { get; private set; }
+        private readonly HashSet<Triangle> triangles;
         public MainController(int nSquaresHorizontal, int nSquareVertical,
             DirectBitmap directBitmap) {
             triangles = new HashSet<Triangle>();
-            triangles.Add(new Triangle(
-                new Vector3(0, 0, 0),
-                new Vector3(0, directBitmap.Height - 1, 0),
-                new Vector3(directBitmap.Width - 1, 0, 0)));
-            triangles.Add(new Triangle(
-                new Vector3(directBitmap.Width - 1, directBitmap.Height - 1, 0),
-                new Vector3(0, directBitmap.Height - 1, 0),
-                new Vector3(directBitmap.Width - 1, 0, 0)));
+            float x_step = (float)(directBitmap.Width - 1) / nSquaresHorizontal;
+            float y_step = (float)(directBitmap.Height - 1) / nSquareVertical;
+            (float x, float y) cur = (0, 0);
+            Vector3[,] points
+                = new Vector3[nSquaresHorizontal + 1, nSquareVertical + 1];
+            for (int i = 0; i <= nSquaresHorizontal; ++i) {
+                cur.x = 0;
+                for (int j = 0; j <= nSquareVertical; ++j) {
+                    points[i, j] = new Vector3(cur.x, cur.y, 0);
+                    cur.x += x_step;
+                }
+                cur.y += y_step;
+            }
+            for (int i = 0; i < nSquaresHorizontal; ++i)
+                for (int j = 0; j < nSquareVertical; ++j) {
+                    triangles.Add(new Triangle(
+                        points[i, j],
+                        points[i + 1, j],
+                        points[i, j + 1]));
+                    triangles.Add(new Triangle(
+                        points[i + 1, j + 1],
+                        points[i + 1, j],
+                        points[i, j + 1]));
+                }
         }
         public void OnPaint(DirectBitmap directBitmap) {
             foreach (var triangle in triangles)
