@@ -17,10 +17,16 @@ namespace gk2 {
             MaximizeBox = false;
             MinimizeBox = false;
 
+
             directBitmap =
                 new DirectBitmap(
                     pictureBox1.Width - pictureBox1.Padding.Horizontal,
                     pictureBox1.Height - pictureBox1.Padding.Vertical);
+            directBitmap.BackgoundStyle = DirectBitmap.BkgStyle.SOLID;
+            directBitmap.BgColor = Color.Red;
+            directBitmap.NormalVectorStyle = DirectBitmap.NVStyle.CONSTANT;
+            directBitmap.ConstantNormalVector = new Utils.Vector3(0, 0, 1);
+
             pictureBox1.Image = directBitmap.Bitmap;
             (nSquaresHorizontal, nSquaresVertical) = (10, 7);
             mainController =
@@ -29,6 +35,8 @@ namespace gk2 {
 
             timer = new Timer();
             SetTimer();
+
+            radioButton2.Checked = radioButton3.Checked = true;
         }
 
         private void SetTimer() {
@@ -72,6 +80,67 @@ namespace gk2 {
 
         private void pictureBox1_Paint(object sender, PaintEventArgs e) {
             mainController.OnPaint(directBitmap);
+        }
+
+        private void button1_Click(object sender, EventArgs e) {
+            ColorDialog cd = new ColorDialog();
+            if (cd.ShowDialog() == DialogResult.OK)
+                directBitmap.BgColor = cd.Color;
+        }
+
+        private void button2_Click(object sender, EventArgs e) {
+            OpenFileDialog open = new OpenFileDialog();
+            open.Filter = "Image Files(*.jpg; *.jpeg; *.gif; *.bmp)|*.jpg; *.jpeg; *.gif; *.bmp";
+            if (open.ShowDialog() == DialogResult.OK) {
+                Bitmap bmp = new Bitmap(open.FileName);
+                directBitmap.BgImage = new Bitmap(bmp,
+                    new Size(directBitmap.Width, directBitmap.Height));
+                bmp.Dispose();
+            }
+        }
+
+        private void radioButton1_CheckedChanged(object sender, EventArgs e) {
+            if (radioButton1.Checked) {
+                if (directBitmap.BgImage == null) {
+                    MessageBox.Show("Select image first");
+                    radioButton2.Checked = true;
+                    return;
+                }
+                directBitmap.BackgoundStyle = DirectBitmap.BkgStyle.IMAGE;
+            }
+        }
+
+        private void radioButton2_CheckedChanged(object sender, EventArgs e) {
+            if (radioButton2.Checked)
+                directBitmap.BackgoundStyle = DirectBitmap.BkgStyle.SOLID;
+        }
+
+        private void radioButton3_CheckedChanged(object sender, EventArgs e) {
+            if (radioButton3.Checked)
+                directBitmap.NormalVectorStyle = DirectBitmap.NVStyle.CONSTANT;
+        }
+
+        private void radioButton4_CheckedChanged(object sender, EventArgs e) {
+            if (radioButton4.Checked) {
+                if (directBitmap.NormalMap == null) {
+                    MessageBox.Show("Select image first");
+                    radioButton3.Checked = true;
+                    return;
+                }
+                directBitmap.NormalVectorStyle =
+                    DirectBitmap.NVStyle.FROM_IMAGE;
+            }
+        }
+
+        private void button3_Click(object sender, EventArgs e) {
+            OpenFileDialog open = new OpenFileDialog();
+            open.Filter = "Image Files(*.jpg; *.jpeg; *.gif; *.bmp)|*.jpg; *.jpeg; *.gif; *.bmp";
+            if (open.ShowDialog() == DialogResult.OK) {
+                Bitmap bmp = new Bitmap(open.FileName);
+                directBitmap.NormalMap = new Bitmap(bmp,
+                    new Size(directBitmap.Width, directBitmap.Height));
+                bmp.Dispose();
+            }
         }
     }
 }

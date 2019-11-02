@@ -15,8 +15,40 @@ namespace gk2 {
         public bool Disposed { get; private set; }
         public int Height { get; private set; }
         public int Width { get; private set; }
+        public Color BgColor { get; set; }
+        public Bitmap BgImage {
+            get { return bgImage; }
+            set {
+                if (bgImage != null)
+                    bgImage.Dispose();
+                bgImage = value;
+            }
+        }
+        public enum BkgStyle {
+            SOLID,
+            IMAGE,
+        };
+        public BkgStyle BackgoundStyle { get; set; }
+        public Vector3 ConstantNormalVector { get; set; }
+        public Bitmap NormalMap {
+            get { return normalMap; }
+            set {
+                if (normalMap != null)
+                    normalMap.Dispose();
+                normalMap = value;
+            }
+        }
+        public enum NVStyle {
+            CONSTANT,
+            FROM_IMAGE,
+        };
+        public NVStyle NormalVectorStyle { get; set; }
+
 
         protected GCHandle BitsHandle { get; private set; }
+
+        private Bitmap bgImage = null;
+        private Bitmap normalMap = null;
 
         public DirectBitmap(int width, int height) {
             Width = width;
@@ -33,17 +65,33 @@ namespace gk2 {
 
             Bits[index] = col;
         }
+        public Color GetBgPixel(int x, int y) {
+            return BackgoundStyle == BkgStyle.SOLID ?
+                BgColor : bgImage.GetPixel(x, y);
+        }
+        public Vector3 GetNormalVector(int x, int y) {
+            if (NormalVectorStyle == NVStyle.CONSTANT) {
+                return ConstantNormalVector;
+            } else {
+                Color c = NormalMap.GetPixel(x, y);
+                return 
+                    new Vector3(c.R - 127, c.G - 127, c.B - 127).UnitVector();
+            }
+        }
         public void DrawLine(Vector2 from, Vector2 to) {
             Pen blackPen = new Pen(Color.Black, 1);
             using (var graphics = Graphics.FromImage(Bitmap)) {
-                graphics.SmoothingMode = 
+                graphics.SmoothingMode =
                     System.Drawing.Drawing2D.SmoothingMode.HighSpeed;
                 graphics.DrawLine(blackPen, from.X, from.Y, to.X, to.Y);
             }
         }
-        public void Clear(Color color) {
+        public void Clear() {
             using (var graphics = Graphics.FromImage(Bitmap)) {
-                graphics.Clear(color);
+                if (BackgoundStyle == BkgStyle.IMAGE)
+                    graphics.DrawImage(bgImage, new PointF(0, 0));
+                else if (BackgoundStyle == BkgStyle.SOLID)
+                    graphics.Clear(BgColor);
             }
         }
 

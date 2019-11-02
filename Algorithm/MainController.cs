@@ -38,7 +38,7 @@ namespace gk2.Algorithm {
                 }
         }
         public void OnPaint(DirectBitmap directBitmap) {
-            directBitmap.Clear(Color.White);
+            directBitmap.Clear();
             foreach (var triangle in triangles)
                 triangle.OnPaint(directBitmap);
         }
