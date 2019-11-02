@@ -17,19 +17,17 @@ namespace gk2 {
             MaximizeBox = false;
             MinimizeBox = false;
 
-            timer = new Timer();
-
-            MinimumSize = new Size(MinimumSize.Width,
-                groupBox1.Height + groupBox2.Height);
             directBitmap =
                 new DirectBitmap(
-                    pictureBox1.Width - pictureBox1.Padding.Horizontal, 
+                    pictureBox1.Width - pictureBox1.Padding.Horizontal,
                     pictureBox1.Height - pictureBox1.Padding.Vertical);
             pictureBox1.Image = directBitmap.Bitmap;
             (nSquaresHorizontal, nSquaresVertical) = (10, 7);
             mainController =
                 new MainController(
                     nSquaresHorizontal, nSquaresVertical, directBitmap);
+
+            timer = new Timer();
             SetTimer();
         }
 
@@ -49,12 +47,13 @@ namespace gk2 {
         }
 
         private void CheckBox1_Click(object sender, EventArgs e) {
-            KtrackBar1.Enabled = mtrackBar1.Enabled = !checkBox1.Checked;
+            KtrackBar2.Enabled = KtrackBar1.Enabled
+                 = MtrackBar1.Enabled = !checkBox1.Checked;
         }
 
         private Utils.Vector2 pom_vector = new Utils.Vector2(0, 0);
         private void pictureBox1_MouseDown(object sender, MouseEventArgs e) {
-            (pom_vector.X, pom_vector.Y) = 
+            (pom_vector.X, pom_vector.Y) =
                 (e.X - pictureBox1.Padding.Left, e.Y - pictureBox1.Padding.Top);
             mainController.OnMouseDown(pom_vector);
         }

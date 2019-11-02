@@ -9,7 +9,14 @@ namespace gk2.Utils {
     public class Triangle {
         private readonly HashSet<Vector3> Verticies;
         private Vector3 ClickedVertex;
+        private float RandomKd;
+        private float RandomKs;
+        private float RandomM;
         public Triangle(Vector3 v1, Vector3 v2, Vector3 v3) {
+            Random random = new Random();
+            RandomKd = (float)random.NextDouble();
+            RandomKs = (float)random.NextDouble();
+            RandomM = (float)random.NextDouble() * 100;
             Verticies = new HashSet<Vector3> { v1, v2, v3 };
         }
         public override int GetHashCode() {
