@@ -1,8 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace gk2.Utils {
     public class Vector3 {
@@ -16,6 +12,9 @@ namespace gk2.Utils {
         }
         public Vector3(float x, float y, float z) {
             (X, Y, Z) = (x, y, z);
+        }
+        public Vector3(Vector3 v) {
+            (X, Y, Z) = (v.X, v.Y, v.Z);
         }
         public Vector3 UnitVector() {
             return this * (1 / Len);

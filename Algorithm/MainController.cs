@@ -1,9 +1,6 @@
-﻿using gk2.Utils;
-using System;
+﻿using gk2.Drawing;
+using gk2.Utils;
 using System.Collections.Generic;
-using System.Drawing;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace gk2.Algorithm {
@@ -28,31 +25,33 @@ namespace gk2.Algorithm {
             for (int i = 0; i < nSquaresHorizontal; ++i)
                 for (int j = 0; j < nSquareVertical; ++j) {
                     triangles.Add(new Triangle(
-                        points[i, j],
-                        points[i + 1, j],
-                        points[i, j + 1]));
+                        new Vector3(points[i, j]),
+                        new Vector3(points[i + 1, j]),
+                        new Vector3(points[i, j + 1])));
                     triangles.Add(new Triangle(
-                        points[i + 1, j + 1],
-                        points[i + 1, j],
-                        points[i, j + 1]));
+                        new Vector3(points[i + 1, j + 1]),
+                        new Vector3(points[i + 1, j]),
+                        new Vector3(points[i, j + 1])));
                 }
         }
-        public void OnPaint(DirectBitmap directBitmap) {
-            directBitmap.Clear();
+        public void OnPaint(DirectBitmap directBitmap, Background bg) {
             foreach (var triangle in triangles)
-                triangle.OnPaint(directBitmap);
+                triangle.OnPaint(directBitmap, bg);
         }
         public void OnMouseDown(Vector2 mouse_pos) {
-            foreach (var triangle in triangles)
-                triangle.OnMouseDown(mouse_pos);
+            Parallel.ForEach(triangles, triangle =>
+                triangle.OnMouseDown(mouse_pos));
         }
         public void OnMouseUp(Vector2 mouse_pos) {
-            foreach (var triangle in triangles)
-                triangle.OnMouseUp(mouse_pos);
+            Parallel.ForEach(triangles, triangle =>
+                 triangle.OnMouseUp(mouse_pos));
         }
         public void OnMouseMove(Vector2 mouse_pos) {
-            foreach (var triangle in triangles)
-                triangle.OnMouseMove(mouse_pos);
+            Parallel.ForEach(triangles, triangle =>
+                triangle.OnMouseMove(mouse_pos));
+        }
+        public void OnTimer() {
+            Parallel.ForEach(triangles, triangle => triangle.CalculateInsidePixels());
         }
     }
 }
