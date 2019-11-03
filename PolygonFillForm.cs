@@ -15,6 +15,7 @@ namespace gk2 {
         public MainController MainController { get; private set; }
         public Background Background { get; private set; }
         public NormalMap NormalMap { get; private set; }
+        public LightSource MainLight { get; set; }
 
         private Color BgColor = Color.Red;
         private Bitmap BgImage = null;
@@ -39,6 +40,8 @@ namespace gk2 {
                 new MainController(
                     NSquaresHorizontal, NSquaresVertical, DirectBitmap);
             Background = new SolidBackgound(BgColor);
+            MainLight = new LightSource();
+            MainLight.Color = Color.White;
 
             Timer = new Timer();
             SetTimer();
@@ -53,6 +56,7 @@ namespace gk2 {
         }
 
         private void Timer_Tick(object sender, EventArgs e) {
+            MainLight.OnTimer();
             MainController.OnTimer();
             pictureBox1.Invalidate();
             pictureBox1.Refresh();
@@ -87,7 +91,14 @@ namespace gk2 {
         }
 
         private void pictureBox1_Paint(object sender, PaintEventArgs e) {
-            MainController.OnPaint(DirectBitmap, Background);
+            if (checkBox1.Checked)
+                MainController.OnPaint(DirectBitmap, Background, NormalMap,
+               null, MainLight);
+            else
+                MainController.OnPaint(DirectBitmap, Background, NormalMap,
+                    (KtrackBar1.Value / 10.0f,
+                    KtrackBar2.Value / 10.0f, MtrackBar1.Value),
+                    MainLight);
         }
 
         private void button1_Click(object sender, EventArgs e) {
@@ -98,7 +109,7 @@ namespace gk2 {
 
         private void button2_Click(object sender, EventArgs e) {
             OpenFileDialog open = new OpenFileDialog();
-            open.Filter = "Image Files(*.jpg; *.jpeg; *.gif; *.bmp)|*.jpg; *.jpeg; *.gif; *.bmp";
+            open.Filter = "Image Files(*.jpg; *.jpeg; *.gif; *.bmp; *.png)|*.jpg; *.jpeg; *.gif; *.bmp; *.png";
             if (open.ShowDialog() == DialogResult.OK) {
                 if (BgImage != null)
                     BgImage.Dispose();
@@ -158,7 +169,7 @@ namespace gk2 {
 
         private void button3_Click(object sender, EventArgs e) {
             OpenFileDialog open = new OpenFileDialog();
-            open.Filter = "Image Files(*.jpg; *.jpeg; *.gif; *.bmp)|*.jpg; *.jpeg; *.gif; *.bmp";
+            open.Filter = "Image Files(*.jpg; *.jpeg; *.gif; *.bmp; *.png)|*.jpg; *.jpeg; *.gif; *.bmp; *.png";
             if (open.ShowDialog() == DialogResult.OK) {
                 if (NormalMapImage != null)
                     NormalMapImage.Dispose();

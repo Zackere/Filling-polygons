@@ -53,6 +53,7 @@
     <Compile Include="Drawing\DirectBitmap .cs" />
     <Compile Include="Drawing\Background\ImageBackground.cs" />
     <Compile Include="Drawing\Background\SolidBackgound.cs" />
+    <Compile Include="Drawing\LightSource.cs" />
     <Compile Include="Drawing\NormalMap\ConstantNormalVector.cs" />
     <Compile Include="Drawing\NormalMap\NormalMap.cs" />
     <Compile Include="Drawing\NormalMap\NormalMapFromImage.cs" />

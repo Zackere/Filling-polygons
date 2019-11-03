@@ -1,4 +1,5 @@
 ﻿using gk2.Drawing;
+using gk2.Drawing.NormalMap;
 using gk2.Utils;
 using System.Collections.Generic;
 using System.Threading.Tasks;
@@ -34,9 +35,14 @@ namespace gk2.Algorithm {
                         new Vector3(points[i, j + 1])));
                 }
         }
-        public void OnPaint(DirectBitmap directBitmap, Background bg) {
+        public void OnPaint(
+            DirectBitmap directBitmap,
+            Background bg,
+            NormalMap nm,
+            (float kd, float ks, float m)? par, 
+            LightSource ls) {
             foreach (var triangle in triangles)
-                triangle.OnPaint(directBitmap, bg);
+                triangle.OnPaint(directBitmap, bg, nm, par, ls);
         }
         public void OnMouseDown(Vector2 mouse_pos) {
             Parallel.ForEach(triangles, triangle =>

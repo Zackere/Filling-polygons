@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Drawing;
 
 namespace gk2.Utils {
     public class Vector3 {
@@ -18,6 +19,19 @@ namespace gk2.Utils {
         }
         public Vector3 UnitVector() {
             return this * (1 / Len);
+        }
+        public Vector3 Normalise() {
+            float div = 1 / Len;
+            X *= div;
+            Y *= div;
+            Z *= div;
+            return this;
+        }
+        public static Vector3 FromColor(Color C) {
+            return new Vector3(C.R, C.G, C.B);
+        }
+        public static float DotProduct(Vector3 v1, Vector3 v2) {
+            return v1.X * v2.X + v1.Y * v2.Y + v1.Z * v2.Z;
         }
         public static Vector3 operator +(Vector3 v1, Vector3 v2) {
             return new Vector3(v1.X + v2.X, v1.Y + v2.Y, v1.Z + v2.Z);
