@@ -4,11 +4,12 @@ using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
+using System.Numerics;
 
 namespace gk2.Utils {
     public class Triangle {
         private readonly HashSet<Vector3> Verticies;
-        private Vector3 ClickedVertex;
+        private Vector3? ClickedVertex;
         private readonly float RandomKd;
         private readonly float RandomKs;
         private readonly float RandomM;
@@ -21,11 +22,14 @@ namespace gk2.Utils {
         private Vector3 BgColorVector = new Vector3(0, 0, 0);
         private Vector3 LightColorVector = new Vector3(0, 0, 0);
         public Triangle(Vector3 v1, Vector3 v2, Vector3 v3) {
-            Random random = new Random();
+            Random random = new Random(DateTime.Now.Millisecond);
             RandomKd = (float)random.NextDouble();
             RandomKs = (float)random.NextDouble();
-            RandomM = (float)random.NextDouble() * 100;
-            Verticies = new HashSet<Vector3> { v1, v2, v3 };
+            RandomM = (float)random.NextDouble() * 10;
+            Verticies = new HashSet<Vector3> {
+                new Vector3(v1.X, v1.Y, v1.Z),
+                new Vector3(v2.X, v2.Y, v2.Z),
+                new Vector3(v3.X, v3.Y, v3.Z) };
             InsidePixels = new LinkedList<Vector2>();
             CalculateInsidePixels();
             UpToDate = true;
@@ -84,7 +88,7 @@ namespace gk2.Utils {
                         ((int)Verticies.Skip(1).First().X, (int)Verticies.Skip(1).First().Y),
                         ((int)Verticies.Skip(2).First().X, (int)Verticies.Skip(2).First().Y))) {
                         if (LastNode != null) {
-                            (LastNode.Value.X, LastNode.Value.Y) = (i, j);
+                            LastNode.Value = new Vector2(i, j);
                             LastNode = LastNode.Next;
                         } else {
                             InsidePixels.AddLast(new Vector2(i, j));
@@ -102,19 +106,20 @@ namespace gk2.Utils {
             float kd = par == null ? RandomKd : par.Value.kd;
             float ks = par == null ? RandomKs : par.Value.ks;
             float m = par == null ? RandomM : par.Value.m;
-            (kd, ks) = (kd / (kd + ks), ks / (kd + ks));
             (BgColorVector.X, BgColorVector.Y, BgColorVector.Z) =
                 (BgColor.R, BgColor.G, BgColor.B);
             BgColorVector *= 1.0f / byte.MaxValue;
             (LightColorVector.X, LightColorVector.Y, LightColorVector.Z) =
                 (LightColor.R, LightColor.G, LightColor.B);
             LightColorVector *= 1.0f / byte.MaxValue;
-            var dp1 = Math.Max(Vector3.DotProduct(NormalVector, LightDirection), 0.0);
+            var dp1 = Vector3.Dot(
+                Vector3.Normalize(NormalVector),
+                Vector3.Normalize(LightDirection));
             (R.X, R.Y, R.Z) = (NormalVector.X, NormalVector.Y, NormalVector.Z);
             R *= 2;
             R -= LightDirection;
-            R.Normalise();
-            var dp2 = Math.Max(Math.Pow(Vector3.DotProduct(V, R), m), 0.0);
+            var dp2 = Math.Pow(Vector3.Dot(Vector3.Normalize(V), Vector3.Normalize(R)), m);
+            ks = 0;
             var v = new Vector3(
                 (float)((kd * LightColorVector.X * BgColorVector.X * dp1 +
                 ks * LightColorVector.X * BgColorVector.X * dp2)),
@@ -122,11 +127,12 @@ namespace gk2.Utils {
                  ks * LightColorVector.Y * BgColorVector.Y * dp2)),
                 (float)((kd * LightColorVector.Z * BgColorVector.Z * dp1 +
                  ks * LightColorVector.Z * BgColorVector.Z * dp2))
-                ) * (byte.MaxValue);
+                );
+            v *= byte.MaxValue;
             return Color.FromArgb(
-                (byte)(v.X),
-                (byte)(v.Y),
-                (byte)(v.Z));
+                (byte)(Math.Max(v.X, 0.0)),
+                (byte)(Math.Max(v.Y, 0.0)),
+                (byte)(Math.Max(v.Z, 0.0)));
         }
         public void OnPaint(
             DirectBitmap directBitmap,
@@ -142,7 +148,7 @@ namespace gk2.Utils {
                     CalculateColor(
                         ls.Color,
                         bg.GetPixel((int)node.Value.X, (int)node.Value.Y),
-                        (ls.Pos - new Vector3(node.Value.X, node.Value.Y, 0)).UnitVector(),
+                        Vector3.Normalize(ls.Pos - new Vector3(node.Value.X, node.Value.Y, 0)),
                         nm.GetVector((int)node.Value.X, (int)node.Value.Y),
                         par)
                     );
@@ -154,7 +160,7 @@ namespace gk2.Utils {
         public void OnMouseDown(Vector2 mouse_pos) {
             Vector3 mouse_pos_3 = new Vector3(mouse_pos.X, mouse_pos.Y, 0);
             foreach (var vertex in Verticies)
-                if ((vertex - mouse_pos_3).Len < 5) {
+                if ((vertex - mouse_pos_3).Length() < 5) {
                     ClickedVertex = vertex;
                     return;
                 }
@@ -164,9 +170,9 @@ namespace gk2.Utils {
         }
         public void OnMouseMove(Vector2 mouse_pos) {
             if (ClickedVertex != null) {
-                if ((ClickedVertex.X, ClickedVertex.Y) != (mouse_pos.X, mouse_pos.Y) &&
-                    (ClickedVertex - new Vector3(mouse_pos.X, mouse_pos.Y, 0)).Len > 5) {
-                    (ClickedVertex.X, ClickedVertex.Y) = (mouse_pos.X, mouse_pos.Y);
+                if ((ClickedVertex.Value.X, ClickedVertex.Value.Y) != (mouse_pos.X, mouse_pos.Y) &&
+                    (ClickedVertex - new Vector3(mouse_pos, 0)).Value.Length() > 5) {
+                    ClickedVertex = new Vector3(mouse_pos, 0);
                     UpToDate = false;
                 }
             }

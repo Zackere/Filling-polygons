@@ -2,6 +2,7 @@
 using gk2.Drawing.NormalMap;
 using gk2.Utils;
 using System.Collections.Generic;
+using System.Numerics;
 using System.Threading.Tasks;
 
 namespace gk2.Algorithm {
@@ -26,20 +27,20 @@ namespace gk2.Algorithm {
             for (int i = 0; i < nSquaresHorizontal; ++i)
                 for (int j = 0; j < nSquareVertical; ++j) {
                     triangles.Add(new Triangle(
-                        new Vector3(points[i, j]),
-                        new Vector3(points[i + 1, j]),
-                        new Vector3(points[i, j + 1])));
+                        points[i, j],
+                        points[i + 1, j],
+                        points[i, j + 1]));
                     triangles.Add(new Triangle(
-                        new Vector3(points[i + 1, j + 1]),
-                        new Vector3(points[i + 1, j]),
-                        new Vector3(points[i, j + 1])));
+                        points[i + 1, j + 1],
+                        points[i + 1, j],
+                        points[i, j + 1]));
                 }
         }
         public void OnPaint(
             DirectBitmap directBitmap,
             Background bg,
             NormalMap nm,
-            (float kd, float ks, float m)? par, 
+            (float kd, float ks, float m)? par,
             LightSource ls) {
             foreach (var triangle in triangles)
                 triangle.OnPaint(directBitmap, bg, nm, par, ls);

@@ -1,5 +1,5 @@
-﻿using gk2.Utils;
-using System;
+﻿using System;
+using System.Numerics;
 
 namespace gk2.Drawing.NormalMap {
     public abstract class NormalMap : IDisposable {

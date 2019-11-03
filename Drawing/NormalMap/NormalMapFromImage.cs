@@ -1,5 +1,5 @@
-﻿using gk2.Utils;
-using System.Drawing;
+﻿using System.Drawing;
+using System.Numerics;
 
 namespace gk2.Drawing.NormalMap {
     public class NormalMapFromImage : NormalMap {
@@ -18,11 +18,11 @@ namespace gk2.Drawing.NormalMap {
 
         public override Vector3 GetVector(int x, int y) {
             var col = directBitmap.GetPixel(x, y);
-            var ret = new Vector3(col.R, col.G, col.B);
-            ret.X -= 127;
-            ret.Y -= 127;
-            ret.Z -= 127;
-            return ret.UnitVector();
+            var ret = new Vector3(
+                col.R - byte.MaxValue / 2,
+                byte.MaxValue / 2 - col.G,
+                col.B - byte.MaxValue / 2);
+            return ret / ret.Length();
         }
     }
 }

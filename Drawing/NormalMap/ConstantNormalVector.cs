@@ -1,4 +1,4 @@
-﻿using gk2.Utils;
+﻿using System.Numerics;
 
 namespace gk2.Drawing.NormalMap {
     public class ConstantNormalVector : NormalMap {

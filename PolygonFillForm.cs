@@ -1,9 +1,9 @@
 ﻿using gk2.Algorithm;
 using gk2.Drawing;
 using gk2.Drawing.NormalMap;
-using gk2.Utils;
 using System;
 using System.Drawing;
+using System.Numerics;
 using System.Windows.Forms;
 
 namespace gk2 {
@@ -71,7 +71,7 @@ namespace gk2 {
                  = MtrackBar1.Enabled = !checkBox1.Checked;
         }
 
-        private Utils.Vector2 pom_vector = new Utils.Vector2(0, 0);
+        private Vector2 pom_vector = new Vector2(0, 0);
         private void pictureBox1_MouseDown(object sender, MouseEventArgs e) {
             (pom_vector.X, pom_vector.Y) =
                 (e.X - pictureBox1.Padding.Left, e.Y - pictureBox1.Padding.Top);
