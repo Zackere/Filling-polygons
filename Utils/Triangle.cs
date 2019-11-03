@@ -8,7 +8,7 @@ using System.Numerics;
 
 namespace gk2.Utils {
     public class Triangle {
-        private readonly HashSet<Vector3> Verticies;
+        private readonly List<Vector3> Verticies;
         private Vector3? ClickedVertex;
         private readonly float RandomKd;
         private readonly float RandomKs;
@@ -26,7 +26,7 @@ namespace gk2.Utils {
             RandomKd = (float)random.NextDouble();
             RandomKs = (float)random.NextDouble();
             RandomM = (float)random.NextDouble() * 10;
-            Verticies = new HashSet<Vector3> {
+            Verticies = new List<Vector3> {
                 new Vector3(v1.X, v1.Y, v1.Z),
                 new Vector3(v2.X, v2.Y, v2.Z),
                 new Vector3(v3.X, v3.Y, v3.Z) };
@@ -39,14 +39,6 @@ namespace gk2.Utils {
             foreach (var vertex in Verticies)
                 vector += vertex;
             return vector.GetHashCode();
-        }
-
-        public override bool Equals(object obj) {
-            if (obj is Triangle) {
-                var triangle = obj as Triangle;
-                return Verticies.SetEquals(triangle.Verticies);
-            }
-            return false;
         }
         private float Sign((int X, int Y) p1, (int X, int Y) p2, (int X, int Y) p3) {
             return (p1.X - p3.X) * (p2.Y - p3.Y) - (p2.X - p3.X) * (p1.Y - p3.Y);
@@ -84,9 +76,9 @@ namespace gk2.Utils {
             for (int i = min_x; i < max_x; ++i)
                 for (int j = min_y; j < max_y; ++j) {
                     if (PointInTriangle((i, j),
-                        ((int)Verticies.Skip(0).First().X, (int)Verticies.Skip(0).First().Y),
-                        ((int)Verticies.Skip(1).First().X, (int)Verticies.Skip(1).First().Y),
-                        ((int)Verticies.Skip(2).First().X, (int)Verticies.Skip(2).First().Y))) {
+                        ((int)Verticies[0].X, (int)Verticies[0].Y),
+                        ((int)Verticies[1].X, (int)Verticies[1].Y),
+                        ((int)Verticies[2].X, (int)Verticies[2].Y))) {
                         if (LastNode != null) {
                             LastNode.Value = new Vector2(i, j);
                             LastNode = LastNode.Next;
@@ -119,7 +111,6 @@ namespace gk2.Utils {
             R *= 2;
             R -= LightDirection;
             var dp2 = Math.Pow(Vector3.Dot(Vector3.Normalize(V), Vector3.Normalize(R)), m);
-            ks = 0;
             var v = new Vector3(
                 (float)((kd * LightColorVector.X * BgColorVector.X * dp1 +
                 ks * LightColorVector.X * BgColorVector.X * dp2)),
@@ -128,7 +119,7 @@ namespace gk2.Utils {
                 (float)((kd * LightColorVector.Z * BgColorVector.Z * dp1 +
                  ks * LightColorVector.Z * BgColorVector.Z * dp2))
                 );
-            v *= byte.MaxValue;
+            v *= byte.MaxValue / 2;
             return Color.FromArgb(
                 (byte)(Math.Max(v.X, 0.0)),
                 (byte)(Math.Max(v.Y, 0.0)),
@@ -169,10 +160,15 @@ namespace gk2.Utils {
             ClickedVertex = null;
         }
         public void OnMouseMove(Vector2 mouse_pos) {
-            if (ClickedVertex != null) {
+            if (ClickedVertex.HasValue) {
                 if ((ClickedVertex.Value.X, ClickedVertex.Value.Y) != (mouse_pos.X, mouse_pos.Y) &&
                     (ClickedVertex - new Vector3(mouse_pos, 0)).Value.Length() > 5) {
-                    ClickedVertex = new Vector3(mouse_pos, 0);
+                    for (int i = 0; i < Verticies.Count; ++i) {
+                        if (Verticies[i].Equals(ClickedVertex)) {
+                            ClickedVertex = Verticies[i] = new Vector3(mouse_pos, 0);
+                            break;
+                        }
+                    }
                     UpToDate = false;
                 }
             }

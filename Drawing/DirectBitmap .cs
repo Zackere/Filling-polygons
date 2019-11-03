@@ -40,11 +40,14 @@ namespace gk2.Drawing {
 
         public void DrawLine((int x, int y) from, (int x, int y) to) {
             Pen p = new Pen(Color.Black);
-            using (Graphics g = Graphics.FromImage(Bitmap)) {
-                g.DrawLine(p, from.x, from.y, to.x, to.y);
-            }
+            using Graphics g = Graphics.FromImage(Bitmap);
+            g.DrawLine(p, from.x, from.y, to.x, to.y);
         }
 
+        public void Clear(Color c) {
+            using Graphics g = Graphics.FromImage(Bitmap);
+            g.Clear(c);
+        }
         public void Dispose() {
             if (Disposed)
                 return;

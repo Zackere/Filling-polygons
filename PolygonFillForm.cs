@@ -42,6 +42,8 @@ namespace gk2 {
             Background = new SolidBackgound(BgColor);
             MainLight = new LightSource();
             MainLight.Color = Color.White;
+            (MainLight.ScreenW, MainLight.ScreenH) =
+                (DirectBitmap.Width, DirectBitmap.Height);
 
             Timer = new Timer();
             SetTimer();
@@ -103,8 +105,10 @@ namespace gk2 {
 
         private void button1_Click(object sender, EventArgs e) {
             ColorDialog cd = new ColorDialog();
-            if (cd.ShowDialog() == DialogResult.OK)
+            if (cd.ShowDialog() == DialogResult.OK) {
                 BgColor = cd.Color;
+                radioButton2.Checked = true;
+            }
         }
 
         private void button2_Click(object sender, EventArgs e) {
@@ -119,6 +123,8 @@ namespace gk2 {
                         Background.Dispose();
                     Background = new ImageBackground(BgImage,
                         DirectBitmap.Width, DirectBitmap.Height);
+                } else {
+                    radioButton1.Checked = true;
                 }
             }
         }
@@ -179,6 +185,8 @@ namespace gk2 {
                         NormalMap.Dispose();
                     NormalMap = new NormalMapFromImage(NormalMapImage,
                         DirectBitmap.Width, DirectBitmap.Height);
+                } else {
+                    radioButton4.Checked = true;
                 }
             }
         }

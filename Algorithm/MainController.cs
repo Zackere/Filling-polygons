@@ -2,6 +2,7 @@
 using gk2.Drawing.NormalMap;
 using gk2.Utils;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Numerics;
 using System.Threading.Tasks;
 
@@ -42,6 +43,7 @@ namespace gk2.Algorithm {
             NormalMap nm,
             (float kd, float ks, float m)? par,
             LightSource ls) {
+            directBitmap.Clear(Color.White);
             foreach (var triangle in triangles)
                 triangle.OnPaint(directBitmap, bg, nm, par, ls);
         }
