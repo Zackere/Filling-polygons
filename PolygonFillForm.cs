@@ -35,7 +35,7 @@ namespace gk2 {
                     pictureBox1.Width - pictureBox1.Padding.Horizontal,
                     pictureBox1.Height - pictureBox1.Padding.Vertical);
             pictureBox1.Image = DirectBitmap.Bitmap;
-            (NSquaresHorizontal, NSquaresVertical) = (40, 40);
+            (NSquaresHorizontal, NSquaresVertical) = (5, 5);
             MainController =
                 new MainController(
                     NSquaresHorizontal, NSquaresVertical, DirectBitmap);
@@ -153,8 +153,6 @@ namespace gk2 {
 
         private void radioButton3_CheckedChanged(object sender, EventArgs e) {
             if (radioButton3.Checked) {
-                if (NormalMap != null)
-                    NormalMap.Dispose();
                 NormalMap = new ConstantNormalVector(ConstantNormalVector);
             }
         }
@@ -166,8 +164,6 @@ namespace gk2 {
                     radioButton3.Checked = true;
                     return;
                 }
-                if (NormalMap != null)
-                    NormalMap.Dispose();
                 NormalMap = new NormalMapFromImage(NormalMapImage,
                     DirectBitmap.Width, DirectBitmap.Height);
             }
@@ -181,8 +177,6 @@ namespace gk2 {
                     NormalMapImage.Dispose();
                 NormalMapImage = new Bitmap(open.FileName);
                 if (radioButton4.Checked) {
-                    if (NormalMap != null)
-                        NormalMap.Dispose();
                     NormalMap = new NormalMapFromImage(NormalMapImage,
                         DirectBitmap.Width, DirectBitmap.Height);
                 } else {

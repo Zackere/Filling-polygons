@@ -100,26 +100,18 @@ namespace gk2.Utils {
             float m = par == null ? RandomM : par.Value.m;
             (BgColorVector.X, BgColorVector.Y, BgColorVector.Z) =
                 (BgColor.R, BgColor.G, BgColor.B);
-            BgColorVector *= 1.0f / byte.MaxValue;
+            BgColorVector /= byte.MaxValue;
             (LightColorVector.X, LightColorVector.Y, LightColorVector.Z) =
                 (LightColor.R, LightColor.G, LightColor.B);
-            LightColorVector *= 1.0f / byte.MaxValue;
+            LightColorVector /= byte.MaxValue;
             var dp1 = Vector3.Dot(
                 Vector3.Normalize(NormalVector),
                 Vector3.Normalize(LightDirection));
-            (R.X, R.Y, R.Z) = (NormalVector.X, NormalVector.Y, NormalVector.Z);
-            R *= 2;
-            R -= LightDirection;
-            var dp2 = Math.Pow(Vector3.Dot(Vector3.Normalize(V), Vector3.Normalize(R)), m);
-            var v = new Vector3(
-                (float)((kd * LightColorVector.X * BgColorVector.X * dp1 +
-                ks * LightColorVector.X * BgColorVector.X * dp2)),
-                (float)((kd * LightColorVector.Y * BgColorVector.Y * dp1 +
-                 ks * LightColorVector.Y * BgColorVector.Y * dp2)),
-                (float)((kd * LightColorVector.Z * BgColorVector.Z * dp1 +
-                 ks * LightColorVector.Z * BgColorVector.Z * dp2))
-                );
-            v *= byte.MaxValue / 2;
+            R = Vector3.Reflect(-LightDirection, NormalVector); // 2 * <N,L> * N - L
+            var dp2 = Math.Pow(Vector3.Dot(V, Vector3.Normalize(R)), m);
+            var v = (float)(kd * dp1 + ks * dp2) * LightColorVector * BgColorVector;
+            v = Vector3.Clamp(v, new Vector3(0, 0, 0), new Vector3(1, 1, 1));
+            v *= byte.MaxValue;
             return Color.FromArgb(
                 (byte)(Math.Max(v.X, 0.0)),
                 (byte)(Math.Max(v.Y, 0.0)),
