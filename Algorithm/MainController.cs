@@ -62,5 +62,8 @@ namespace gk2.Algorithm {
         public void OnTimer() {
             Parallel.ForEach(triangles, triangle => triangle.CalculateInsidePixels());
         }
+        public void ShowMesh(bool show) {
+            Parallel.ForEach(triangles, triangle => triangle.ShowMesh = show);
+        }
     }
 }

@@ -9,6 +9,7 @@ using System.Threading.Tasks;
 
 namespace gk2.Utils {
     public class Triangle {
+        public bool ShowMesh { get; set; } = false;
         private readonly List<Vector3> Verticies;
         private Vector3? ClickedVertex;
         private readonly float RandomKd;
@@ -121,10 +122,11 @@ namespace gk2.Utils {
                         Vector3.Normalize(ls.Pos - new Vector3(node.X, node.Y, 0)),
                         nm.GetVector((int)node.X, (int)node.Y),
                         par)));
-            for (int i = 0; i < Verticies.Count; ++i) {
-                directBitmap.DrawLine(from, ((int)Verticies[i].X, (int)Verticies[i].Y));
-                from = ((int)Verticies[i].X, (int)Verticies[i].Y);
-            }
+            if (ShowMesh)
+                for (int i = 0; i < Verticies.Count; ++i) {
+                    directBitmap.DrawLine(from, ((int)Verticies[i].X, (int)Verticies[i].Y));
+                    from = ((int)Verticies[i].X, (int)Verticies[i].Y);
+                }
         }
         public void OnMouseDown(Vector2 mouse_pos) {
             Vector3 mouse_pos_3 = new Vector3(mouse_pos.X, mouse_pos.Y, 0);

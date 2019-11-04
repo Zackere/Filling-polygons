@@ -58,7 +58,8 @@ namespace gk2 {
         }
 
         private void Timer_Tick(object sender, EventArgs e) {
-            MainLight.OnTimer();
+            if (!StopLightCheckbox.Checked)
+                MainLight.OnTimer();
             MainController.OnTimer();
             pictureBox1.Invalidate();
             pictureBox1.Refresh();
@@ -183,6 +184,10 @@ namespace gk2 {
                     radioButton4.Checked = true;
                 }
             }
+        }
+
+        private void ShowMeshCheckbox_CheckedChanged(object sender, EventArgs e) {
+            MainController.ShowMesh(ShowMeshCheckbox.Checked);
         }
     }
 }
