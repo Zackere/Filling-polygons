@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
 using System.Numerics;
+using System.Threading.Tasks;
 
 namespace gk2.Utils {
     public class Triangle {
@@ -14,13 +15,9 @@ namespace gk2.Utils {
         private readonly float RandomKs;
         private readonly float RandomM;
         private readonly LinkedList<Vector2> InsidePixels;
-        private LinkedListNode<Vector2> LastNode;
         private bool UpToDate = false;
         private Vector3 LightDirection = new Vector3(0, 0, 1);
         private Vector3 V = new Vector3(0, 0, 1);
-        private Vector3 R = new Vector3(0, 0, 0);
-        private Vector3 BgColorVector = new Vector3(0, 0, 0);
-        private Vector3 LightColorVector = new Vector3(0, 0, 0);
         public Triangle(Vector3 v1, Vector3 v2, Vector3 v3) {
             Random random = new Random(DateTime.Now.Millisecond);
             RandomKd = (float)random.NextDouble();
@@ -60,6 +57,7 @@ namespace gk2.Utils {
         public void CalculateInsidePixels() {
             if (UpToDate)
                 return;
+            InsidePixels.Clear();
             int min_x = (int)Verticies.First().X, max_x = (int)Verticies.First().Y,
                 min_y = (int)Verticies.First().Y, max_y = (int)Verticies.First().Y;
             foreach (var v in Verticies) {
@@ -72,19 +70,13 @@ namespace gk2.Utils {
                 if (max_y < (int)v.Y)
                     max_y = (int)v.Y;
             }
-            LastNode = InsidePixels.First;
             for (int i = min_x; i < max_x; ++i)
                 for (int j = min_y; j < max_y; ++j) {
                     if (PointInTriangle((i, j),
                         ((int)Verticies[0].X, (int)Verticies[0].Y),
                         ((int)Verticies[1].X, (int)Verticies[1].Y),
                         ((int)Verticies[2].X, (int)Verticies[2].Y))) {
-                        if (LastNode != null) {
-                            LastNode.Value = new Vector2(i, j);
-                            LastNode = LastNode.Next;
-                        } else {
-                            InsidePixels.AddLast(new Vector2(i, j));
-                        }
+                        InsidePixels.AddLast(new Vector2(i, j));
                     }
                 }
             UpToDate = true;
@@ -98,16 +90,12 @@ namespace gk2.Utils {
             float kd = par == null ? RandomKd : par.Value.kd;
             float ks = par == null ? RandomKs : par.Value.ks;
             float m = par == null ? RandomM : par.Value.m;
-            (BgColorVector.X, BgColorVector.Y, BgColorVector.Z) =
-                (BgColor.R, BgColor.G, BgColor.B);
-            BgColorVector /= byte.MaxValue;
-            (LightColorVector.X, LightColorVector.Y, LightColorVector.Z) =
-                (LightColor.R, LightColor.G, LightColor.B);
-            LightColorVector /= byte.MaxValue;
+            var BgColorVector = new Vector3(BgColor.R, BgColor.G, BgColor.B) / byte.MaxValue;
+            var LightColorVector = new Vector3(LightColor.R, LightColor.G, LightColor.B) / byte.MaxValue;
             var dp1 = Vector3.Dot(
                 Vector3.Normalize(NormalVector),
                 Vector3.Normalize(LightDirection));
-            R = Vector3.Reflect(-LightDirection, NormalVector); // 2 * <N,L> * N - L
+            var R = Vector3.Reflect(-LightDirection, NormalVector); // 2 * <N,L> * N - L
             var dp2 = Math.Pow(Vector3.Dot(V, Vector3.Normalize(R)), m);
             var v = (float)(kd * dp1 + ks * dp2) * LightColorVector * BgColorVector;
             v = Vector3.Clamp(v, new Vector3(0, 0, 0), new Vector3(1, 1, 1));
@@ -123,21 +111,19 @@ namespace gk2.Utils {
             NormalMap nm,
             (float kd, float ks, float m)? par,
             LightSource ls) {
-            var verticies_list = Verticies.ToList();
-            var from = ((int)verticies_list[verticies_list.Count - 1].X,
-                (int)verticies_list[verticies_list.Count - 1].Y);
-            for (var node = InsidePixels.First; node != LastNode; node = node.Next)
-                directBitmap.SetPixel((int)node.Value.X, (int)node.Value.Y,
+            var from = ((int)Verticies[Verticies.Count - 1].X,
+                (int)Verticies[Verticies.Count - 1].Y);
+            Parallel.ForEach(InsidePixels, node =>
+            directBitmap.SetPixel((int)node.X, (int)node.Y,
                     CalculateColor(
                         ls.Color,
-                        bg.GetPixel((int)node.Value.X, (int)node.Value.Y),
-                        Vector3.Normalize(ls.Pos - new Vector3(node.Value.X, node.Value.Y, 0)),
-                        nm.GetVector((int)node.Value.X, (int)node.Value.Y),
-                        par)
-                    );
-            for (int i = 0; i < verticies_list.Count; ++i) {
-                directBitmap.DrawLine(from, ((int)verticies_list[i].X, (int)verticies_list[i].Y));
-                from = ((int)verticies_list[i].X, (int)verticies_list[i].Y);
+                        bg.GetPixel((int)node.X, (int)node.Y),
+                        Vector3.Normalize(ls.Pos - new Vector3(node.X, node.Y, 0)),
+                        nm.GetVector((int)node.X, (int)node.Y),
+                        par)));
+            for (int i = 0; i < Verticies.Count; ++i) {
+                directBitmap.DrawLine(from, ((int)Verticies[i].X, (int)Verticies[i].Y));
+                from = ((int)Verticies[i].X, (int)Verticies[i].Y);
             }
         }
         public void OnMouseDown(Vector2 mouse_pos) {

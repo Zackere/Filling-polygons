@@ -2,6 +2,7 @@
 using System.Drawing;
 using System.Drawing.Imaging;
 using System.Runtime.InteropServices;
+using System.Threading;
 
 namespace gk2.Drawing {
     public class DirectBitmap : IDisposable {
@@ -25,7 +26,7 @@ namespace gk2.Drawing {
             int index = x + (y * Width);
             int col = colour.ToArgb();
             if (index > 0 && index < Bits.Length)
-                Bits[index] = col;
+                Interlocked.Exchange(ref Bits[index], col);
         }
 
         public Color GetPixel(int x, int y) {
