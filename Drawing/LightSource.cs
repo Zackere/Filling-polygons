@@ -15,7 +15,7 @@ namespace gk2.Drawing {
             Pos = new Vector3(
                 (float)(ScreenW * (1 + Math.Cos(t))/ 2),
                 (float)(ScreenH * (1 + Math.Sin(2 * t)) / 2), 
-                20 * (float)(1 + Math.Sin(2 * t)));
+                20 * (float)(1 + Math.Sin(Math.PI * t)));
         }
     }
 }

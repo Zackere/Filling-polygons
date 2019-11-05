@@ -92,11 +92,11 @@ namespace gk2.Utils {
             float m = par == null ? RandomM : par.Value.m;
             var BgColorVector = new Vector3(BgColor.R, BgColor.G, BgColor.B) / byte.MaxValue;
             var LightColorVector = new Vector3(LightColor.R, LightColor.G, LightColor.B) / byte.MaxValue;
-            var dp1 = Vector3.Dot(
+            var dp1 = Math.Max(Vector3.Dot(
                 Vector3.Normalize(NormalVector),
-                Vector3.Normalize(LightDirection));
+                Vector3.Normalize(LightDirection)), 0);
             var R = Vector3.Reflect(-LightDirection, NormalVector); // 2 * <N,L> * N - L
-            var dp2 = Math.Pow(Vector3.Dot(V, Vector3.Normalize(R)), m);
+            var dp2 = Math.Pow(Math.Max(Vector3.Dot(V, Vector3.Normalize(R)), 0), m);
             var v = (float)(kd * dp1 + ks * dp2) * LightColorVector * BgColorVector;
             v = Vector3.Clamp(v, new Vector3(0, 0, 0), new Vector3(1, 1, 1));
             v *= byte.MaxValue;
