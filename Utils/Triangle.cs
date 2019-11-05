@@ -31,54 +31,42 @@ namespace gk2.Utils {
             CalculateInsidePixels();
             UpToDate = true;
         }
-        public override int GetHashCode() {
-            Vector3 vector = new Vector3(0, 0, 0);
-            foreach (var vertex in Verticies)
-                vector += vertex;
-            return vector.GetHashCode();
+        private class EdgeStructure {
+            public float Y_max { get; set; }
+            public float X_min { get; set; }
+            public float Coef { get; set; }
+            public EdgeStructure Next { get; set; }
         }
-        private float Sign((int X, int Y) p1, (int X, int Y) p2, (int X, int Y) p3) {
-            return (p1.X - p3.X) * (p2.Y - p3.Y) - (p2.X - p3.X) * (p1.Y - p3.Y);
+        private class ETArr {
+            EdgeStructure[] Edges { get; set; }
+
         }
+        private EdgeStructure[] GetEt() {
+            var ret = new LinkedList<EdgeStructure>();
+            for (int i = 0; i < Verticies.Count; ++i) {
+                if (Verticies[i].Y != Verticies[(i + 1) % Verticies.Count].Y)
+                    ret.AddLast(new EdgeStructure {
+                        Y_max = Math.Max(Verticies[i].Y, Verticies[(i + 1) % Verticies.Count].Y),
+                        X_min = Math.Min(Verticies[i].X, Verticies[(i + 1) % Verticies.Count].X),
+                        Coef = (Verticies[i].X - Verticies[(i + 1) % Verticies.Count].X) / Verticies[i].Y - Verticies[(i + 1) % Verticies.Count].Y,
+                        Next = null,
+                    });
+            }
 
-        private bool PointInTriangle((int X, int Y) pt, (int X, int Y) v1, (int X, int Y) v2, (int X, int Y) v3) {
-            float d1, d2, d3;
-            bool has_neg, has_pos;
 
-            d1 = Sign(pt, v1, v2);
-            d2 = Sign(pt, v2, v3);
-            d3 = Sign(pt, v3, v1);
 
-            has_neg = (d1 < 0) || (d2 < 0) || (d3 < 0);
-            has_pos = (d1 > 0) || (d2 > 0) || (d3 > 0);
 
-            return !(has_neg && has_pos);
+            return ret_arr;
         }
         public void CalculateInsidePixels() {
             if (UpToDate)
                 return;
             InsidePixels.Clear();
-            int min_x = (int)Verticies.First().X, max_x = (int)Verticies.First().Y,
-                min_y = (int)Verticies.First().Y, max_y = (int)Verticies.First().Y;
-            foreach (var v in Verticies) {
-                if (min_x > (int)v.X)
-                    min_x = (int)v.X;
-                if (max_x < (int)v.X)
-                    max_x = (int)v.X;
-                if (min_y > (int)v.Y)
-                    min_y = (int)v.Y;
-                if (max_y < (int)v.Y)
-                    max_y = (int)v.Y;
-            }
-            for (int i = min_x; i < max_x; ++i)
-                for (int j = min_y; j < max_y; ++j) {
-                    if (PointInTriangle((i, j),
-                        ((int)Verticies[0].X, (int)Verticies[0].Y),
-                        ((int)Verticies[1].X, (int)Verticies[1].Y),
-                        ((int)Verticies[2].X, (int)Verticies[2].Y))) {
-                        InsidePixels.AddLast(new Vector2(i, j));
-                    }
-                }
+
+            var Et = GetEt();
+
+
+
             UpToDate = true;
         }
         private Color CalculateColor(
