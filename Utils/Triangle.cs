@@ -33,30 +33,47 @@ namespace gk2.Utils {
         }
         private class EdgeStructure {
             public float Y_max { get; set; }
+            public float Y_min { get; set; }
             public float X_min { get; set; }
             public float Coef { get; set; }
-            public EdgeStructure Next { get; set; }
         }
         private class ETArr {
-            EdgeStructure[] Edges { get; set; }
+            public LinkedList<EdgeStructure>[] Edges { get; set; }
+            public int Y_min { get; set; }
+            public int Y_max { get; set; }
 
         }
-        private EdgeStructure[] GetEt() {
-            var ret = new LinkedList<EdgeStructure>();
+        private ETArr GetEt() {
+            var edges = new LinkedList<EdgeStructure>();
             for (int i = 0; i < Verticies.Count; ++i) {
                 if (Verticies[i].Y != Verticies[(i + 1) % Verticies.Count].Y)
-                    ret.AddLast(new EdgeStructure {
+                    edges.AddLast(new EdgeStructure {
                         Y_max = Math.Max(Verticies[i].Y, Verticies[(i + 1) % Verticies.Count].Y),
-                        X_min = Math.Min(Verticies[i].X, Verticies[(i + 1) % Verticies.Count].X),
-                        Coef = (Verticies[i].X - Verticies[(i + 1) % Verticies.Count].X) / Verticies[i].Y - Verticies[(i + 1) % Verticies.Count].Y,
-                        Next = null,
+                        Y_min = Math.Min(Verticies[i].Y, Verticies[(i + 1) % Verticies.Count].Y),
+                        X_min = Verticies[i].Y < Verticies[(i + 1) % Verticies.Count].Y ?
+                            Verticies[i].X :
+                            Verticies[(i + 1) % Verticies.Count].X,
+                        Coef = (Verticies[(i + 1) % Verticies.Count].X - Verticies[i].X) /
+                            (Verticies[(i + 1) % Verticies.Count].Y - Verticies[i].Y),
                     });
             }
+            var ret = new ETArr { Y_max = (int)Verticies[0].Y, Y_min = (int)Verticies[0].Y };
+            for (int i = 0; i < Verticies.Count; ++i) {
+                var v = Verticies[i];
+                if (Verticies[i].Y != Verticies[(i + 1) % Verticies.Count].Y) {
+                    if (ret.Y_min > v.Y)
+                        ret.Y_min = (int)v.Y;
+                    if (ret.Y_max < v.Y)
+                        ret.Y_max = (int)v.Y;
+                }
+            }
+            ret.Edges = new LinkedList<EdgeStructure>[ret.Y_max - ret.Y_min + 1];
+            for (int i = 0; i < ret.Edges.Length; ++i)
+                ret.Edges[i] = new LinkedList<EdgeStructure>();
+            foreach (var edge in edges)
+                ret.Edges[(int)edge.Y_min - ret.Y_min].AddLast(edge);
 
-
-
-
-            return ret_arr;
+            return ret;
         }
         public void CalculateInsidePixels() {
             if (UpToDate)
@@ -64,8 +81,35 @@ namespace gk2.Utils {
             InsidePixels.Clear();
 
             var Et = GetEt();
+            var Aet = new LinkedList<EdgeStructure>();
+            var query = from edge in Aet
+                        orderby edge.X_min ascending
+                        select edge;
+            for(int y = (int)Et.Y_min; y <= Et.Y_max;) {
+                foreach (var v in Et.Edges[y - Et.Y_min])
+                    Aet.AddLast(v);
+                EdgeStructure e = null;
+                foreach(var edge in query) {
+                    if (e == null) {
+                        e = edge;
+                    }
+                    else {
+                        for (int x = (int)e.X_min; x < (int)edge.X_min; ++x)
+                            InsidePixels.AddLast(new Vector2(x, y));
+                        e = null;
+                    }
+                }
 
-
+                for (var v = Aet.First; v != Aet.Last;) {
+                    var next = v.Next;
+                    if ((int)v.Value.Y_max == y)
+                        Aet.Remove(v);
+                    v = next;
+                }
+                ++y;
+                foreach (var edge in Aet)
+                    edge.X_min += edge.Coef;
+            }
 
             UpToDate = true;
         }
