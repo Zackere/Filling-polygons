@@ -48,7 +48,7 @@ namespace gk2 {
             Timer = new Timer();
             SetTimer();
 
-            radioButton2.Checked = radioButton3.Checked = true;
+            Exact.Checked = radioButton2.Checked = radioButton3.Checked = true;
         }
 
         private void SetTimer() {
@@ -189,6 +189,18 @@ namespace gk2 {
 
         private void ShowMeshCheckbox_CheckedChanged(object sender, EventArgs e) {
             MainController.ShowMesh(ShowMeshCheckbox.Checked);
+        }
+
+        private void Exact_CheckedChanged(object sender, EventArgs e) {
+            MainController.SetExactMethod();
+        }
+
+        private void Aproximate_CheckedChanged(object sender, EventArgs e) {
+            MainController.SetAproximateMethod();
+        }
+
+        private void Combined_CheckedChanged(object sender, EventArgs e) {
+            MainController.SetCombinedMethod();
         }
     }
 }
