@@ -202,5 +202,37 @@ namespace gk2 {
         private void Combined_CheckedChanged(object sender, EventArgs e) {
             MainController.SetCombinedMethod();
         }
+
+        private void button4_Click(object sender, EventArgs e) {
+            ++NSquaresHorizontal;
+            ++NSquaresVertical;
+            MainController =
+                new MainController(
+                    NSquaresHorizontal, NSquaresVertical, DirectBitmap);
+            if (Exact.Checked)
+                MainController.SetExactMethod();
+            else if (Aproximate.Checked)
+                MainController.SetAproximateMethod();
+            else if (Combined.Checked)
+                MainController.SetCombinedMethod();
+            MainController.ShowMesh(ShowMeshCheckbox.Checked);
+        }
+
+        private void button5_Click(object sender, EventArgs e) {
+            if (NSquaresHorizontal == 1 || NSquaresVertical == 1)
+                return;
+            --NSquaresHorizontal;
+            --NSquaresVertical;
+            MainController =
+                new MainController(
+                    NSquaresHorizontal, NSquaresVertical, DirectBitmap);
+            if (Exact.Checked)
+                MainController.SetExactMethod();
+            else if (Aproximate.Checked)
+                MainController.SetAproximateMethod();
+            else if (Combined.Checked)
+                MainController.SetCombinedMethod();
+            MainController.ShowMesh(ShowMeshCheckbox.Checked);
+        }
     }
 }

@@ -59,6 +59,8 @@
             this.tableLayoutPanel7 = new System.Windows.Forms.TableLayoutPanel();
             this.StopLightCheckbox = new System.Windows.Forms.CheckBox();
             this.ShowMeshCheckbox = new System.Windows.Forms.CheckBox();
+            this.button4 = new System.Windows.Forms.Button();
+            this.button5 = new System.Windows.Forms.Button();
             this.pictureBox1 = new System.Windows.Forms.PictureBox();
             this.tableLayoutPanel1.SuspendLayout();
             this.tableLayoutPanel2.SuspendLayout();
@@ -91,7 +93,7 @@
             this.tableLayoutPanel1.Name = "tableLayoutPanel1";
             this.tableLayoutPanel1.RowCount = 1;
             this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
-            this.tableLayoutPanel1.Size = new System.Drawing.Size(962, 692);
+            this.tableLayoutPanel1.Size = new System.Drawing.Size(962, 789);
             this.tableLayoutPanel1.TabIndex = 0;
             // 
             // tableLayoutPanel2
@@ -115,7 +117,7 @@
             this.tableLayoutPanel2.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.tableLayoutPanel2.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.tableLayoutPanel2.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
-            this.tableLayoutPanel2.Size = new System.Drawing.Size(216, 650);
+            this.tableLayoutPanel2.Size = new System.Drawing.Size(216, 707);
             this.tableLayoutPanel2.TabIndex = 1;
             // 
             // groupBox1
@@ -457,7 +459,7 @@
             this.groupBox5.Controls.Add(this.tableLayoutPanel7);
             this.groupBox5.Location = new System.Drawing.Point(3, 573);
             this.groupBox5.Name = "groupBox5";
-            this.groupBox5.Size = new System.Drawing.Size(213, 74);
+            this.groupBox5.Size = new System.Drawing.Size(213, 131);
             this.groupBox5.TabIndex = 4;
             this.groupBox5.TabStop = false;
             this.groupBox5.Text = "Other";
@@ -468,13 +470,17 @@
             this.tableLayoutPanel7.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
             this.tableLayoutPanel7.Controls.Add(this.StopLightCheckbox, 0, 0);
             this.tableLayoutPanel7.Controls.Add(this.ShowMeshCheckbox, 0, 1);
+            this.tableLayoutPanel7.Controls.Add(this.button4, 0, 2);
+            this.tableLayoutPanel7.Controls.Add(this.button5, 0, 3);
             this.tableLayoutPanel7.Dock = System.Windows.Forms.DockStyle.Left;
             this.tableLayoutPanel7.Location = new System.Drawing.Point(3, 16);
             this.tableLayoutPanel7.Name = "tableLayoutPanel7";
-            this.tableLayoutPanel7.RowCount = 2;
-            this.tableLayoutPanel7.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 50F));
-            this.tableLayoutPanel7.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 50F));
-            this.tableLayoutPanel7.Size = new System.Drawing.Size(206, 55);
+            this.tableLayoutPanel7.RowCount = 4;
+            this.tableLayoutPanel7.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 25F));
+            this.tableLayoutPanel7.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 25F));
+            this.tableLayoutPanel7.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 25F));
+            this.tableLayoutPanel7.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 25F));
+            this.tableLayoutPanel7.Size = new System.Drawing.Size(206, 112);
             this.tableLayoutPanel7.TabIndex = 0;
             // 
             // StopLightCheckbox
@@ -483,7 +489,7 @@
             this.StopLightCheckbox.Dock = System.Windows.Forms.DockStyle.Left;
             this.StopLightCheckbox.Location = new System.Drawing.Point(3, 3);
             this.StopLightCheckbox.Name = "StopLightCheckbox";
-            this.StopLightCheckbox.Size = new System.Drawing.Size(74, 21);
+            this.StopLightCheckbox.Size = new System.Drawing.Size(74, 22);
             this.StopLightCheckbox.TabIndex = 0;
             this.StopLightCheckbox.Text = "Stop Light";
             this.StopLightCheckbox.UseVisualStyleBackColor = true;
@@ -492,13 +498,37 @@
             // 
             this.ShowMeshCheckbox.AutoSize = true;
             this.ShowMeshCheckbox.Dock = System.Windows.Forms.DockStyle.Left;
-            this.ShowMeshCheckbox.Location = new System.Drawing.Point(3, 30);
+            this.ShowMeshCheckbox.Location = new System.Drawing.Point(3, 31);
             this.ShowMeshCheckbox.Name = "ShowMeshCheckbox";
             this.ShowMeshCheckbox.Size = new System.Drawing.Size(82, 22);
             this.ShowMeshCheckbox.TabIndex = 1;
             this.ShowMeshCheckbox.Text = "Show Mesh";
             this.ShowMeshCheckbox.UseVisualStyleBackColor = true;
             this.ShowMeshCheckbox.CheckedChanged += new System.EventHandler(this.ShowMeshCheckbox_CheckedChanged);
+            // 
+            // button4
+            // 
+            this.button4.Dock = System.Windows.Forms.DockStyle.Left;
+            this.button4.Location = new System.Drawing.Point(2, 58);
+            this.button4.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.button4.Name = "button4";
+            this.button4.Size = new System.Drawing.Size(106, 24);
+            this.button4.TabIndex = 2;
+            this.button4.Text = "Add Trriangles";
+            this.button4.UseVisualStyleBackColor = true;
+            this.button4.Click += new System.EventHandler(this.button4_Click);
+            // 
+            // button5
+            // 
+            this.button5.Dock = System.Windows.Forms.DockStyle.Left;
+            this.button5.Location = new System.Drawing.Point(2, 86);
+            this.button5.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.button5.Name = "button5";
+            this.button5.Size = new System.Drawing.Size(106, 24);
+            this.button5.TabIndex = 3;
+            this.button5.Text = "Remove Triangles";
+            this.button5.UseVisualStyleBackColor = true;
+            this.button5.Click += new System.EventHandler(this.button5_Click);
             // 
             // pictureBox1
             // 
@@ -507,7 +537,7 @@
             this.pictureBox1.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
             this.pictureBox1.Name = "pictureBox1";
             this.pictureBox1.Padding = new System.Windows.Forms.Padding(50, 52, 50, 52);
-            this.pictureBox1.Size = new System.Drawing.Size(738, 688);
+            this.pictureBox1.Size = new System.Drawing.Size(738, 785);
             this.pictureBox1.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
             this.pictureBox1.TabIndex = 2;
             this.pictureBox1.TabStop = false;
@@ -520,7 +550,7 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(962, 692);
+            this.ClientSize = new System.Drawing.Size(962, 789);
             this.Controls.Add(this.tableLayoutPanel1);
             this.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
             this.Name = "PolygonFillForm";
@@ -586,6 +616,8 @@
         private System.Windows.Forms.TableLayoutPanel tableLayoutPanel7;
         private System.Windows.Forms.CheckBox StopLightCheckbox;
         private System.Windows.Forms.CheckBox ShowMeshCheckbox;
+        private System.Windows.Forms.Button button4;
+        private System.Windows.Forms.Button button5;
     }
 }
 
