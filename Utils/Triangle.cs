@@ -31,54 +31,84 @@ namespace gk2.Utils {
             CalculateInsidePixels();
             UpToDate = true;
         }
-        public override int GetHashCode() {
-            Vector3 vector = new Vector3(0, 0, 0);
-            foreach (var vertex in Verticies)
-                vector += vertex;
-            return vector.GetHashCode();
+        private class EdgeStructure {
+            public float Y_max { get; set; }
+            public float Y_min { get; set; }
+            public float X_min { get; set; }
+            public float Coef { get; set; }
         }
-        private float Sign((int X, int Y) p1, (int X, int Y) p2, (int X, int Y) p3) {
-            return (p1.X - p3.X) * (p2.Y - p3.Y) - (p2.X - p3.X) * (p1.Y - p3.Y);
+        private class ETArr {
+            public LinkedList<EdgeStructure>[] Edges { get; set; }
+            public int Y_min { get; set; }
+            public int Y_max { get; set; }
+
         }
+        private ETArr GetEt() {
+            var edges = new LinkedList<EdgeStructure>();
+            for (int i = 0; i < Verticies.Count; ++i) {
+                if (Verticies[i].Y != Verticies[(i + 1) % Verticies.Count].Y)
+                    edges.AddLast(new EdgeStructure {
+                        Y_max = Math.Max(Verticies[i].Y, Verticies[(i + 1) % Verticies.Count].Y),
+                        Y_min = Math.Min(Verticies[i].Y, Verticies[(i + 1) % Verticies.Count].Y),
+                        X_min = Verticies[i].Y < Verticies[(i + 1) % Verticies.Count].Y ?
+                            Verticies[i].X :
+                            Verticies[(i + 1) % Verticies.Count].X,
+                        Coef = (Verticies[(i + 1) % Verticies.Count].X - Verticies[i].X) /
+                            (Verticies[(i + 1) % Verticies.Count].Y - Verticies[i].Y),
+                    });
+            }
+            var ret = new ETArr { Y_max = (int)Verticies[0].Y, Y_min = (int)Verticies[0].Y };
+            for (int i = 0; i < Verticies.Count; ++i) {
+                var v = Verticies[i];
+                if (Verticies[i].Y != Verticies[(i + 1) % Verticies.Count].Y) {
+                    if (ret.Y_min > v.Y)
+                        ret.Y_min = (int)v.Y;
+                    if (ret.Y_max < v.Y)
+                        ret.Y_max = (int)v.Y;
+                }
+            }
+            ret.Edges = new LinkedList<EdgeStructure>[ret.Y_max - ret.Y_min + 1];
+            for (int i = 0; i < ret.Edges.Length; ++i)
+                ret.Edges[i] = new LinkedList<EdgeStructure>();
+            foreach (var edge in edges)
+                ret.Edges[(int)edge.Y_min - ret.Y_min].AddLast(edge);
 
-        private bool PointInTriangle((int X, int Y) pt, (int X, int Y) v1, (int X, int Y) v2, (int X, int Y) v3) {
-            float d1, d2, d3;
-            bool has_neg, has_pos;
-
-            d1 = Sign(pt, v1, v2);
-            d2 = Sign(pt, v2, v3);
-            d3 = Sign(pt, v3, v1);
-
-            has_neg = (d1 < 0) || (d2 < 0) || (d3 < 0);
-            has_pos = (d1 > 0) || (d2 > 0) || (d3 > 0);
-
-            return !(has_neg && has_pos);
+            return ret;
         }
         public void CalculateInsidePixels() {
             if (UpToDate)
                 return;
             InsidePixels.Clear();
-            int min_x = (int)Verticies.First().X, max_x = (int)Verticies.First().Y,
-                min_y = (int)Verticies.First().Y, max_y = (int)Verticies.First().Y;
-            foreach (var v in Verticies) {
-                if (min_x > (int)v.X)
-                    min_x = (int)v.X;
-                if (max_x < (int)v.X)
-                    max_x = (int)v.X;
-                if (min_y > (int)v.Y)
-                    min_y = (int)v.Y;
-                if (max_y < (int)v.Y)
-                    max_y = (int)v.Y;
-            }
-            for (int i = min_x; i < max_x; ++i)
-                for (int j = min_y; j < max_y; ++j) {
-                    if (PointInTriangle((i, j),
-                        ((int)Verticies[0].X, (int)Verticies[0].Y),
-                        ((int)Verticies[1].X, (int)Verticies[1].Y),
-                        ((int)Verticies[2].X, (int)Verticies[2].Y))) {
-                        InsidePixels.AddLast(new Vector2(i, j));
+
+            var Et = GetEt();
+            var Aet = new LinkedList<EdgeStructure>();
+            var query = from edge in Aet
+                        orderby edge.X_min ascending
+                        select edge;
+            for(int y = Et.Y_min; y <= Et.Y_max; ++y) {
+                EdgeStructure e = null;
+                foreach(var edge in query) {
+                    if (e == null) {
+                        e = edge;
+                    }
+                    else {
+                        for (int x = (int)e.X_min; x < (int)edge.X_min; ++x)
+                            InsidePixels.AddLast(new Vector2(x, y));
+                        e = null;
                     }
                 }
+                foreach (var v in Et.Edges[y - Et.Y_min])
+                    Aet.AddLast(v);
+                for (var v = Aet.First; v != Aet.Last;) {
+                    var next = v.Next;
+                    if ((int)v.Value.Y_max == y)
+                        Aet.Remove(v);
+                    v = next;
+                }
+                foreach (var edge in Aet)
+                    edge.X_min += edge.Coef;
+            }
+
             UpToDate = true;
         }
         private Color CalculateColor(
