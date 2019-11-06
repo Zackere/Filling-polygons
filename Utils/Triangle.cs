@@ -85,9 +85,7 @@ namespace gk2.Utils {
             var query = from edge in Aet
                         orderby edge.X_min ascending
                         select edge;
-            for(int y = (int)Et.Y_min; y <= Et.Y_max;) {
-                foreach (var v in Et.Edges[y - Et.Y_min])
-                    Aet.AddLast(v);
+            for(int y = Et.Y_min; y <= Et.Y_max; ++y) {
                 EdgeStructure e = null;
                 foreach(var edge in query) {
                     if (e == null) {
@@ -99,14 +97,14 @@ namespace gk2.Utils {
                         e = null;
                     }
                 }
-
+                foreach (var v in Et.Edges[y - Et.Y_min])
+                    Aet.AddLast(v);
                 for (var v = Aet.First; v != Aet.Last;) {
                     var next = v.Next;
                     if ((int)v.Value.Y_max == y)
                         Aet.Remove(v);
                     v = next;
                 }
-                ++y;
                 foreach (var edge in Aet)
                     edge.X_min += edge.Coef;
             }
