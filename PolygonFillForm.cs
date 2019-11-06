@@ -108,6 +108,7 @@ namespace gk2 {
             ColorDialog cd = new ColorDialog();
             if (cd.ShowDialog() == DialogResult.OK) {
                 BgColor = cd.Color;
+                Background = new SolidBackgound(BgColor);
                 radioButton2.Checked = true;
             }
         }
