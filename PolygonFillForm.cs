@@ -35,7 +35,7 @@ namespace gk2 {
                     pictureBox1.Width - pictureBox1.Padding.Horizontal,
                     pictureBox1.Height - pictureBox1.Padding.Vertical);
             pictureBox1.Image = DirectBitmap.Bitmap;
-            (NSquaresHorizontal, NSquaresVertical) = (5, 5);
+            (NSquaresHorizontal, NSquaresVertical) = (1, 1);
             MainController =
                 new MainController(
                     NSquaresHorizontal, NSquaresVertical, DirectBitmap);
@@ -48,7 +48,7 @@ namespace gk2 {
             Timer = new Timer();
             SetTimer();
 
-            Exact.Checked = radioButton2.Checked = radioButton3.Checked = true;
+            Exact.Checked = BgFromColorRadioButton.Checked = ConstNormalVectorRadioButton.Checked = true;
         }
 
         private void SetTimer() {
@@ -65,13 +65,13 @@ namespace gk2 {
             pictureBox1.Refresh();
         }
 
-        private void Form1_FormClosing(object sender, FormClosingEventArgs e) {
+        private void PolygonFillForm_FormClosing(object sender, FormClosingEventArgs e) {
             DirectBitmap.Dispose();
         }
 
-        private void CheckBox1_Click(object sender, EventArgs e) {
+        private void RandomParamsCheckbox_Click(object sender, EventArgs e) {
             KtrackBar2.Enabled = KtrackBar1.Enabled
-                 = MtrackBar1.Enabled = !checkBox1.Checked;
+                 = MtrackBar1.Enabled = !RandomParamsCheckbox.Checked;
         }
 
         private Vector2 pom_vector = new Vector2(0, 0);
@@ -94,7 +94,7 @@ namespace gk2 {
         }
 
         private void pictureBox1_Paint(object sender, PaintEventArgs e) {
-            if (checkBox1.Checked)
+            if (RandomParamsCheckbox.Checked)
                 MainController.OnPaint(DirectBitmap, Background, NormalMap,
                null, MainLight);
             else
@@ -104,38 +104,38 @@ namespace gk2 {
                     MainLight);
         }
 
-        private void button1_Click(object sender, EventArgs e) {
+        private void SelectColorButton_Click(object sender, EventArgs e) {
             ColorDialog cd = new ColorDialog();
             if (cd.ShowDialog() == DialogResult.OK) {
                 BgColor = cd.Color;
                 Background = new SolidBackgound(BgColor);
-                radioButton2.Checked = true;
+                BgFromColorRadioButton.Checked = true;
             }
         }
 
-        private void button2_Click(object sender, EventArgs e) {
+        private void SelectImageButton_Click(object sender, EventArgs e) {
             OpenFileDialog open = new OpenFileDialog();
             open.Filter = "Image Files(*.jpg; *.jpeg; *.gif; *.bmp; *.png)|*.jpg; *.jpeg; *.gif; *.bmp; *.png";
             if (open.ShowDialog() == DialogResult.OK) {
                 if (BgImage != null)
                     BgImage.Dispose();
                 BgImage = new Bitmap(open.FileName);
-                if (radioButton1.Checked) {
+                if (BgFromImageRadioButton.Checked) {
                     if (Background != null)
                         Background.Dispose();
                     Background = new ImageBackground(BgImage,
                         DirectBitmap.Width, DirectBitmap.Height);
                 } else {
-                    radioButton1.Checked = true;
+                    BgFromImageRadioButton.Checked = true;
                 }
             }
         }
 
-        private void radioButton1_CheckedChanged(object sender, EventArgs e) {
-            if (radioButton1.Checked) {
+        private void BgFromImageRadioButton_CheckedChanged(object sender, EventArgs e) {
+            if (BgFromImageRadioButton.Checked) {
                 if (BgImage == null) {
                     MessageBox.Show("Select image first");
-                    radioButton2.Checked = true;
+                    BgFromColorRadioButton.Checked = true;
                     return;
                 }
                 if (Background != null)
@@ -145,25 +145,25 @@ namespace gk2 {
             }
         }
 
-        private void radioButton2_CheckedChanged(object sender, EventArgs e) {
-            if (radioButton2.Checked) {
+        private void BgFromColorRadioButton_CheckedChanged(object sender, EventArgs e) {
+            if (BgFromColorRadioButton.Checked) {
                 if (Background != null)
                     Background.Dispose();
                 Background = new SolidBackgound(BgColor);
             }
         }
 
-        private void radioButton3_CheckedChanged(object sender, EventArgs e) {
-            if (radioButton3.Checked) {
+        private void NormalVectorFromBitmapRadioButton_CheckedChanged(object sender, EventArgs e) {
+            if (ConstNormalVectorRadioButton.Checked) {
                 NormalMap = new ConstantNormalVector(ConstantNormalVector);
             }
         }
 
-        private void radioButton4_CheckedChanged(object sender, EventArgs e) {
-            if (radioButton4.Checked) {
+        private void ConstNormalVectorRadioButton_CheckedChanged(object sender, EventArgs e) {
+            if (NormalVectorFromBitmapRadioButton.Checked) {
                 if (NormalMapImage == null) {
                     MessageBox.Show("Select image first");
-                    radioButton3.Checked = true;
+                    ConstNormalVectorRadioButton.Checked = true;
                     return;
                 }
                 NormalMap = new NormalMapFromImage(NormalMapImage,
@@ -171,18 +171,18 @@ namespace gk2 {
             }
         }
 
-        private void button3_Click(object sender, EventArgs e) {
+        private void SelectNormalMapButton_Click(object sender, EventArgs e) {
             OpenFileDialog open = new OpenFileDialog();
             open.Filter = "Image Files(*.jpg; *.jpeg; *.gif; *.bmp; *.png)|*.jpg; *.jpeg; *.gif; *.bmp; *.png";
             if (open.ShowDialog() == DialogResult.OK) {
                 if (NormalMapImage != null)
                     NormalMapImage.Dispose();
                 NormalMapImage = new Bitmap(open.FileName);
-                if (radioButton4.Checked) {
+                if (NormalVectorFromBitmapRadioButton.Checked) {
                     NormalMap = new NormalMapFromImage(NormalMapImage,
                         DirectBitmap.Width, DirectBitmap.Height);
                 } else {
-                    radioButton4.Checked = true;
+                    NormalVectorFromBitmapRadioButton.Checked = true;
                 }
             }
         }
@@ -203,7 +203,7 @@ namespace gk2 {
             MainController.SetCombinedMethod();
         }
 
-        private void button4_Click(object sender, EventArgs e) {
+        private void AddTrianglesButton_Click(object sender, EventArgs e) {
             ++NSquaresHorizontal;
             ++NSquaresVertical;
             MainController =
@@ -218,7 +218,7 @@ namespace gk2 {
             MainController.ShowMesh(ShowMeshCheckbox.Checked);
         }
 
-        private void button5_Click(object sender, EventArgs e) {
+        private void RemoveTrianglesButton_Click(object sender, EventArgs e) {
             if (NSquaresHorizontal == 1 || NSquaresVertical == 1)
                 return;
             --NSquaresHorizontal;

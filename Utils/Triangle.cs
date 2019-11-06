@@ -56,13 +56,18 @@ namespace gk2.Utils {
             for (int i = 0; i < Verticies.Count; ++i) {
                 if (Verticies[i].Y != Verticies[(i + 1) % Verticies.Count].Y)
                     edges.AddLast(new EdgeStructure {
-                        Y_max = Math.Max(Verticies[i].Y, Verticies[(i + 1) % Verticies.Count].Y),
-                        Y_min = Math.Min(Verticies[i].Y, Verticies[(i + 1) % Verticies.Count].Y),
-                        X_min = Verticies[i].Y < Verticies[(i + 1) % Verticies.Count].Y ?
-                            Verticies[i].X :
-                            Verticies[(i + 1) % Verticies.Count].X,
-                        Coef = (Verticies[(i + 1) % Verticies.Count].X - Verticies[i].X) /
-                            (Verticies[(i + 1) % Verticies.Count].Y - Verticies[i].Y),
+                        Y_max = Math.Max(Verticies[i].Y,
+                        Verticies[(i + 1) % Verticies.Count].Y),
+                        Y_min = Math.Min(Verticies[i].Y,
+                        Verticies[(i + 1) % Verticies.Count].Y),
+                        X_min = Verticies[i].Y <
+                                Verticies[(i + 1) % Verticies.Count].Y ?
+                                    Verticies[i].X :
+                                    Verticies[(i + 1) % Verticies.Count].X,
+                        Coef = (Verticies[(i + 1) % Verticies.Count].X -
+                                    Verticies[i].X) /
+                            (Verticies[(i + 1) % Verticies.Count].Y -
+                                    Verticies[i].Y),
                     });
             }
             var ret = new ETArr();
@@ -78,7 +83,8 @@ namespace gk2.Utils {
             }
             ret.Y_min = (int)ymin;
             ret.Y_max = (int)ymax;
-            ret.Edges = new LinkedList<EdgeStructure>[ret.Y_max - ret.Y_min + 2];
+            ret.Edges = 
+                new LinkedList<EdgeStructure>[ret.Y_max - ret.Y_min + 2];
             for (int i = 0; i < ret.Edges.Length; ++i)
                 ret.Edges[i] = new LinkedList<EdgeStructure>();
             foreach (var edge in edges)
@@ -130,14 +136,20 @@ namespace gk2.Utils {
             float kd = par == null ? RandomKd : par.Value.kd;
             float ks = par == null ? RandomKs : par.Value.ks;
             float m = par == null ? RandomM : par.Value.m;
-            var BgColorVector = new Vector3(BgColor.R, BgColor.G, BgColor.B) / byte.MaxValue;
-            var LightColorVector = new Vector3(LightColor.R, LightColor.G, LightColor.B) / byte.MaxValue;
+            var BgColorVector = 
+                new Vector3(BgColor.R, BgColor.G, BgColor.B) / byte.MaxValue;
+            var LightColorVector = 
+                new Vector3(LightColor.R, 
+                            LightColor.G, 
+                            LightColor.B) / byte.MaxValue;
             var dp1 = Math.Max(Vector3.Dot(
                 Vector3.Normalize(NormalVector),
                 Vector3.Normalize(LightDirection)), 0);
-            var R = Vector3.Reflect(-LightDirection, NormalVector); // 2 * <N,L> * N - L
-            var dp2 = Math.Pow(Math.Max(Vector3.Dot(V, Vector3.Normalize(R)), 0), m);
-            var v = (float)(kd * dp1 + ks * dp2) * LightColorVector * BgColorVector;
+            var R = Vector3.Reflect(-LightDirection, NormalVector);
+            var dp2 = 
+                Math.Pow(Math.Max(Vector3.Dot(V, Vector3.Normalize(R)), 0), m);
+            var v = 
+                (float)(kd * dp1 + ks * dp2) * LightColorVector * BgColorVector;
             v = Vector3.Clamp(v, new Vector3(0, 0, 0), new Vector3(1, 1, 1));
             v *= byte.MaxValue;
             return Color.FromArgb(
@@ -192,7 +204,8 @@ namespace gk2.Utils {
                             nm.GetVector((int)Verticies[i].X, (int)Verticies[i].Y));
                     }
                     Parallel.ForEach(InsidePixels, node => {
-                        var bar = ToBarycentric(new Vector3(node, 0), Verticies[0], Verticies[1], Verticies[2]);
+                        var bar = ToBarycentric(new Vector3(node, 0), 
+                            Verticies[0], Verticies[1], Verticies[2]);
                         var color_v =
                         ps[0].Color * bar.X +
                         ps[1].Color * bar.Y +
@@ -235,7 +248,8 @@ namespace gk2.Utils {
         }
         public void OnMouseMove(Vector2 mouse_pos) {
             if (ClickedVertex.HasValue) {
-                if ((ClickedVertex.Value.X, ClickedVertex.Value.Y) != (mouse_pos.X, mouse_pos.Y) &&
+                if ((ClickedVertex.Value.X, ClickedVertex.Value.Y) != 
+                    (mouse_pos.X, mouse_pos.Y) &&
                     (ClickedVertex - new Vector3(mouse_pos, 0)).Value.Length() > 5) {
                     for (int i = 0; i < Verticies.Count; ++i) {
                         if (Verticies[i].Equals(ClickedVertex)) {

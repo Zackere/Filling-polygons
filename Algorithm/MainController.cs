@@ -60,13 +60,14 @@ namespace gk2.Algorithm {
                 triangle.OnMouseMove(mouse_pos));
         }
         public void OnTimer() {
-            Parallel.ForEach(triangles, triangle => triangle.CalculateInsidePixels());
+            Parallel.ForEach(triangles, triangle => 
+            triangle.CalculateInsidePixels());
         }
         public void ShowMesh(bool show) {
             Parallel.ForEach(triangles, triangle => triangle.ShowMesh = show);
         }
         public void SetExactMethod() {
-            Parallel.ForEach(triangles, 
+            Parallel.ForEach(triangles,
                 triangle => triangle.Style = Triangle.DrawingStyle.EXACT);
         }
         public void SetAproximateMethod() {

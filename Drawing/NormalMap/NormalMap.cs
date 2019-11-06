@@ -1,5 +1,4 @@
-﻿using System;
-using System.Numerics;
+﻿using System.Numerics;
 
 namespace gk2.Drawing.NormalMap {
     public abstract class NormalMap {
