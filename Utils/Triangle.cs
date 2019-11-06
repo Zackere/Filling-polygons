@@ -9,7 +9,14 @@ using System.Threading.Tasks;
 
 namespace gk2.Utils {
     public class Triangle {
+        public enum DrawingStyle {
+            EXACT,
+            APROXIMATE,
+            COMBINED,
+        }
         public bool ShowMesh { get; set; } = false;
+        public DrawingStyle Style { get; set; } = DrawingStyle.EXACT;
+
         private readonly List<Vector3> Verticies;
         private Vector3? ClickedVertex;
         private readonly float RandomKd;
@@ -58,17 +65,20 @@ namespace gk2.Utils {
                             (Verticies[(i + 1) % Verticies.Count].Y - Verticies[i].Y),
                     });
             }
-            var ret = new ETArr { Y_max = (int)Verticies[0].Y, Y_min = (int)Verticies[0].Y };
+            var ret = new ETArr();
+            double ymin = Verticies[0].Y, ymax = Verticies[0].Y;
             for (int i = 0; i < Verticies.Count; ++i) {
                 var v = Verticies[i];
                 if (Verticies[i].Y != Verticies[(i + 1) % Verticies.Count].Y) {
-                    if (ret.Y_min > v.Y)
-                        ret.Y_min = (int)v.Y;
-                    if (ret.Y_max < v.Y)
-                        ret.Y_max = (int)v.Y;
+                    if (ymin > v.Y)
+                        ymin = v.Y;
+                    if (ymax < v.Y)
+                        ymax = v.Y;
                 }
             }
-            ret.Edges = new LinkedList<EdgeStructure>[ret.Y_max - ret.Y_min + 1];
+            ret.Y_min = (int)ymin;
+            ret.Y_max = (int)ymax;
+            ret.Edges = new LinkedList<EdgeStructure>[ret.Y_max - ret.Y_min + 2];
             for (int i = 0; i < ret.Edges.Length; ++i)
                 ret.Edges[i] = new LinkedList<EdgeStructure>();
             foreach (var edge in edges)
@@ -86,19 +96,18 @@ namespace gk2.Utils {
             var query = from edge in Aet
                         orderby edge.X_min ascending
                         select edge;
-            for(int y = Et.Y_min; y <= Et.Y_max; ++y) {
+            for (float y = Et.Y_min; y <= Et.Y_max; ++y) {
                 EdgeStructure e = null;
-                foreach(var edge in query) {
+                foreach (var edge in query) {
                     if (e == null) {
                         e = edge;
-                    }
-                    else {
-                        for (int x = (int)e.X_min; x < (int)edge.X_min; ++x)
+                    } else {
+                        for (var x = e.X_min; x <= edge.X_min; ++x)
                             InsidePixels.AddLast(new Vector2(x, y));
                         e = null;
                     }
                 }
-                foreach (var v in Et.Edges[y - Et.Y_min])
+                foreach (var v in Et.Edges[(int)y - Et.Y_min])
                     Aet.AddLast(v);
                 for (var v = Aet.First; v != Aet.Last;) {
                     var next = v.Next;
@@ -112,7 +121,7 @@ namespace gk2.Utils {
 
             UpToDate = true;
         }
-        private Color CalculateColor(
+        private Color CalculateColorExact(
             Color LightColor,
             Color BgColor,
             Vector3 LightDirection,
@@ -132,9 +141,9 @@ namespace gk2.Utils {
             v = Vector3.Clamp(v, new Vector3(0, 0, 0), new Vector3(1, 1, 1));
             v *= byte.MaxValue;
             return Color.FromArgb(
-                (byte)(Math.Max(v.X, 0.0)),
-                (byte)(Math.Max(v.Y, 0.0)),
-                (byte)(Math.Max(v.Z, 0.0)));
+                (byte)v.X,
+                (byte)v.Y,
+                (byte)v.Z);
         }
         public void OnPaint(
             DirectBitmap directBitmap,
@@ -142,21 +151,76 @@ namespace gk2.Utils {
             NormalMap nm,
             (float kd, float ks, float m)? par,
             LightSource ls) {
-            var from = ((int)Verticies[Verticies.Count - 1].X,
-                (int)Verticies[Verticies.Count - 1].Y);
-            Parallel.ForEach(InsidePixels, node =>
-            directBitmap.SetPixel((int)node.X, (int)node.Y,
-                    CalculateColor(
+            switch (Style) {
+                case DrawingStyle.EXACT:
+                Parallel.ForEach(InsidePixels, node =>
+                    directBitmap.SetPixel((int)node.X, (int)node.Y,
+                    CalculateColorExact(
                         ls.Color,
                         bg.GetPixel((int)node.X, (int)node.Y),
                         Vector3.Normalize(ls.Pos - new Vector3(node.X, node.Y, 0)),
                         nm.GetVector((int)node.X, (int)node.Y),
                         par)));
-            if (ShowMesh)
+                break;
+                case DrawingStyle.APROXIMATE: {
+                    Vector3[] verticies_color = new Vector3[Verticies.Count];
+                    for (int i = 0; i < verticies_color.Length; ++i) {
+                        var c = CalculateColorExact(
+                            ls.Color,
+                            bg.GetPixel((int)Verticies[i].X, (int)Verticies[i].Y),
+                            Vector3.Normalize(ls.Pos - new Vector3(Verticies[i].X, Verticies[i].Y, 0)),
+                            nm.GetVector((int)Verticies[i].X, (int)Verticies[i].Y),
+                            par);
+                        directBitmap.SetPixel((int)Verticies[i].X, (int)Verticies[i].Y, c);
+                        verticies_color[i] = new Vector3(c.R, c.G, c.B);
+                    }
+                    Parallel.ForEach(InsidePixels, node => {
+                        var v = ToBarycentric(new Vector3(node, 0), Verticies[0], Verticies[1], Verticies[2]);
+                        var c = verticies_color[0] * v.X + verticies_color[1] * v.Y + verticies_color[2] * v.Z;
+                        directBitmap.SetPixel((int)node.X, (int)node.Y,
+                            Color.FromArgb((byte)c.X, (byte)c.Y, (byte)c.Z));
+                    }
+                    );
+                }
+                break;
+                case DrawingStyle.COMBINED: {
+                    (Vector3 Color, Vector3 Normal)[] ps = new (Vector3, Vector3)[Verticies.Count];
+                    for (int i = 0; i < ps.Length; ++i) {
+                        var c = bg.GetPixel((int)Verticies[i].X,
+                            (int)Verticies[i].Y);
+                        ps[i] = (new Vector3(c.R, c.G, c.B),
+                            nm.GetVector((int)Verticies[i].X, (int)Verticies[i].Y));
+                    }
+                    Parallel.ForEach(InsidePixels, node => {
+                        var bar = ToBarycentric(new Vector3(node, 0), Verticies[0], Verticies[1], Verticies[2]);
+                        var color_v =
+                        ps[0].Color * bar.X +
+                        ps[1].Color * bar.Y +
+                        ps[2].Color * bar.Z;
+                        directBitmap.SetPixel((int)node.X, (int)node.Y,
+                            CalculateColorExact(
+                                ls.Color,
+                                Color.FromArgb(
+                                    (byte)color_v.X,
+                                    (byte)color_v.Y,
+                                    (byte)color_v.Z),
+                                Vector3.Normalize(ls.Pos - new Vector3(node.X, node.Y, 0)),
+                                ps[0].Normal * bar.X +
+                                    ps[1].Normal * bar.Y +
+                                    ps[2].Normal * bar.Z,
+                                par));
+                    });
+                }
+                break;
+            }
+            if (ShowMesh) {
+                var from = ((int)Verticies[Verticies.Count - 1].X,
+                    (int)Verticies[Verticies.Count - 1].Y);
                 for (int i = 0; i < Verticies.Count; ++i) {
                     directBitmap.DrawLine(from, ((int)Verticies[i].X, (int)Verticies[i].Y));
                     from = ((int)Verticies[i].X, (int)Verticies[i].Y);
                 }
+            }
         }
         public void OnMouseDown(Vector2 mouse_pos) {
             Vector3 mouse_pos_3 = new Vector3(mouse_pos.X, mouse_pos.Y, 0);
@@ -182,6 +246,14 @@ namespace gk2.Utils {
                     UpToDate = false;
                 }
             }
+        }
+
+        private Vector3 ToBarycentric(Vector3 p, Vector3 a, Vector3 b, Vector3 c) {
+            Vector3 v0 = b - a, v1 = c - a, v2 = p - a;
+            var den = v0.X * v1.Y - v1.X * v0.Y;
+            var v = (v2.X * v1.Y - v1.X * v2.Y) / den;
+            var w = (v0.X * v2.Y - v2.X * v0.Y) / den;
+            return new Vector3(1.0f - v - w, v, w);
         }
     }
 }

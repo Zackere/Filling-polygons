@@ -65,5 +65,17 @@ namespace gk2.Algorithm {
         public void ShowMesh(bool show) {
             Parallel.ForEach(triangles, triangle => triangle.ShowMesh = show);
         }
+        public void SetExactMethod() {
+            Parallel.ForEach(triangles, 
+                triangle => triangle.Style = Triangle.DrawingStyle.EXACT);
+        }
+        public void SetAproximateMethod() {
+            Parallel.ForEach(triangles,
+               triangle => triangle.Style = Triangle.DrawingStyle.APROXIMATE);
+        }
+        public void SetCombinedMethod() {
+            Parallel.ForEach(triangles,
+               triangle => triangle.Style = Triangle.DrawingStyle.COMBINED);
+        }
     }
 }
